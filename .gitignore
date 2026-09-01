@@ -1,0 +1,19 @@
+# netbeans
+**/nbproject/private/
+nbproject/private/
+
+# build artifacts
+build/
+dist/
+**/build/
+**/dist/
+
+# java
+*.class
+
+# logs
+*.log
+
+# os
+.DS_Store
+Thumbs.db
