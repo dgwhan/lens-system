@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:pt="jakarta.faces.passthrough">
+    <h:head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Users Management - Lens Camera Rental</title>
+        <h:outputStylesheet library="css" name="font.css" />
+        <h:outputStylesheet library="css" name="app.css" />
+        <h:outputStylesheet library="css" name="users.css" />
+    </h:head>
+    <h:body>
+        <!-- JavaScript Alert Popup for Actions (Create, Update) -->
+        <h:panelGroup rendered="#{not empty flash.actionAlert}">
+            <script type="text/javascript">
+                alert('#{flash.actionAlert}');
+            </script>
+        </h:panelGroup>
+
+        <script type="text/javascript">
+            function onDeleteEvent(data) {
+                if (data.status === 'success') {
+                    alert('User deleted successfully.');
+                    window.location.reload();
+                }
+            }
+        </script>
+
+        <div class="main-wrapper">
+            <h:form>
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-row">
+                        <div>
+                            <div class="page-pretitle">Overview</div>
+                            <h1 class="page-title">Users Management</h1>
+                        </div>
+                        <div>
+                            <h:commandButton value="+ Add User" action="#{usersMB.newUser()}" styleClass="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search & Filter Bar -->
+                <h:panelGroup id="searchBar" layout="block" styleClass="users-search">
+                    <h:inputText id="keyword" value="#{usersMB.keyword}" pt:placeholder="Search username, name, email, phone..." styleClass="form-control search-input">
+                        <f:ajax event="keyup" delay="300" render="usersTableWrapper" />
+                    </h:inputText>
+
+                    <h:commandButton value="Search" action="list" styleClass="btn btn-primary">
+                        <f:ajax execute="@form" render="usersTableWrapper" />
+                    </h:commandButton>
+
+                    <!-- Role Filter -->
+                    <h:selectOneMenu id="roleFilter" value="#{usersMB.role}" styleClass="form-select search-role">
+                        <f:selectItem itemLabel="All Roles" itemValue="" />
+                        <f:selectItem itemLabel="Admin" itemValue="ADMIN" />
+                        <f:selectItem itemLabel="Customer" itemValue="CUSTOMER" />
+                        <f:ajax event="change" render="usersTableWrapper" />
+                    </h:selectOneMenu>
+                    
+                    <h:commandButton value="Reset" action="#{usersMB.resetFilter()}" styleClass="btn btn-outline-secondary">
+                        <f:ajax render="searchBar usersTableWrapper" />
+                    </h:commandButton>
+                </h:panelGroup>
+
+                <!-- Users Table -->
+                <div class="card">
+                    <h:panelGroup id="usersTableWrapper" layout="block" styleClass="user-table-wrapper">
+                        <h:dataTable id="usersTable" value="#{usersMB.usersList}" var="user" styleClass="user-table">
+                            <!-- ID -->
+                            <h:column>
+                                <f:facet name="header">ID</f:facet>
+                                <h:outputText value="#{user.id}" />
+                            </h:column>
+
+                            <!-- Username -->
+                            <h:column>
+                                <f:facet name="header">Username</f:facet>
+                                <h:outputText value="#{user.username}" style="font-weight: 600;" />
+                            </h:column>
+
+                            <!-- Full Name -->
+                            <h:column>
+                                <f:facet name="header">Full Name</f:facet>
+                                <h:outputText value="#{user.fullName}" />
+                            </h:column>
+
+                            <!-- Email -->
+                            <h:column>
+                                <f:facet name="header">Email</f:facet>
+                                <h:outputText value="#{user.email}" />
+                            </h:column>
+
+                            <!-- Phone -->
+                            <h:column>
+                                <f:facet name="header">Phone</f:facet>
+                                <h:outputText value="#{user.phone}" />
+                            </h:column>
+
+                            <!-- Role -->
+                            <h:column>
+                                <f:facet name="header">Role</f:facet>
+                                <span class="badge-role #{user.role == 'ADMIN' ? 'badge-admin' : 'badge-customer'}">
+                                    <h:outputText value="#{user.role}" />
+                                </span>
+                            </h:column>
+
+                            <!-- Status -->
+                            <h:column>
+                                <f:facet name="header">Status</f:facet>
+                                <span class="badge-status #{user.status == 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">
+                                    <h:outputText value="#{user.status}" />
+                                </span>
+                            </h:column>
+
+                            <!-- Created At -->
+                            <h:column>
+                                <f:facet name="header">Created At</f:facet>
+                                <h:outputText value="#{user.createdAt}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                                </h:outputText>
+                            </h:column>
+
+                            <!-- Actions -->
+                            <h:column>
+                                <f:facet name="header">Action</f:facet>
+                                <div class="table-row-actions">
+                                    <h:commandButton value="Detail" action="#{usersMB.detailUser(user.id)}" styleClass="btn btn-sm btn-outline-info" />
+                                    <h:commandButton value="Edit" action="#{usersMB.editUser(user.id)}" styleClass="btn btn-sm btn-outline-primary" />
+                                    <h:commandButton value="Delete" action="#{usersMB.deleteUser(user.id)}" styleClass="btn btn-sm btn-outline-danger" 
+                                                     onclick="if (!confirm('Are you sure you want to delete this user?')) return false;">
+                                        <f:ajax render="usersTableWrapper" onevent="onDeleteEvent" />
+                                    </h:commandButton>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGroup>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</html>

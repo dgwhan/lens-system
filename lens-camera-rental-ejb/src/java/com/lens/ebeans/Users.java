@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.lens.ebeans;
 
 import jakarta.persistence.Basic;
@@ -37,7 +33,9 @@ import java.util.Date;
     @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
     @NamedQuery(name = "Users.findByPhone", query = "SELECT u FROM Users u WHERE u.phone = :phone"),
     @NamedQuery(name = "Users.findByRole", query = "SELECT u FROM Users u WHERE u.role = :role"),
-    @NamedQuery(name = "Users.findByCreatedAt", query = "SELECT u FROM Users u WHERE u.createdAt = :createdAt")})
+    @NamedQuery(name = "Users.findByCreatedAt", query = "SELECT u FROM Users u WHERE u.createdAt = :createdAt"),
+    @NamedQuery(name = "Users.findByStatus", query = "SELECT u FROM Users u WHERE u.status = :status"),
+    @NamedQuery(name = "Users.findByUpdatedAt", query = "SELECT u FROM Users u WHERE u.updatedAt = :updatedAt")})
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -62,13 +60,13 @@ public class Users implements Serializable {
     @Column(name = "full_name")
     private String fullName;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
+    @Size(max = 100)
     @Column(name = "email")
     private String email;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
-    @Size(max = 20)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
     @Column(name = "phone")
     private String phone;
     @Basic(optional = false)
@@ -81,6 +79,16 @@ public class Users implements Serializable {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(name = "status")
+    private String status;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     public Users() {
     }
@@ -89,14 +97,16 @@ public class Users implements Serializable {
         this.id = id;
     }
 
-    public Users(Integer id, String username, String password, String fullName, String email, String role, Date createdAt) {
+    public Users(Integer id, String username, String password, String fullName, String phone, String role, Date createdAt, String status, Date updatedAt) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.fullName = fullName;
-        this.email = email;
+        this.phone = phone;
         this.role = role;
         this.createdAt = createdAt;
+        this.status = status;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -163,6 +173,22 @@ public class Users implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -187,5 +213,5 @@ public class Users implements Serializable {
     public String toString() {
         return "com.lens.ebeans.Users[ id=" + id + " ]";
     }
-    
+
 }

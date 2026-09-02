@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:pt="jakarta.faces.passthrough">
+    <h:head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>#{usersMB.editMode ? 'Edit User' : 'Create User'} - Lens Camera Rental</title>
+        <h:outputStylesheet library="css" name="font.css" />
+        <h:outputStylesheet library="css" name="app.css" />
+        <h:outputStylesheet library="css" name="users.css" />
+    </h:head>
+    <h:body>
+        <!-- Global Error Alert Popup (e.g. Server failure) -->
+        <h:panelGroup rendered="#{not empty facesContext.messageList and (facesContext.messageList[0].summary eq 'Failed to create user.' or facesContext.messageList[0].summary eq 'Failed to update user.')}">
+            <script type="text/javascript">
+                alert('#{facesContext.messageList[0].summary}');
+            </script>
+        </h:panelGroup>
+
+        <div class="main-wrapper">
+            <div class="user-page-container">
+                <h:form id="userForm">
+                    <!-- Header -->
+                    <div class="page-header">
+                        <div class="page-header-row">
+                            <div>
+                                <div class="page-pretitle">Users Management</div>
+                                <h1 class="page-title">#{usersMB.editMode ? 'Edit User' : 'Create New User'}</h1>
+                            </div>
+                            <div>
+                                <h:commandButton value="Back to Users" action="list" immediate="true" styleClass="btn btn-outline-secondary" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Form Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">#{usersMB.editMode ? 'User Information' : 'Account Details'}</h2>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <!-- 2-Column Responsive Grid -->
+                            <div class="user-form-grid">
+                                <!-- Field 1: Username (Create mode only) -->
+                                <h:panelGroup layout="block" styleClass="user-form-group" rendered="#{not usersMB.editMode}">
+                                    <h:outputLabel for="username" styleClass="form-label"> Username <span class="form-required">*</span>
+                                    </h:outputLabel>
+                                    <h:inputText id="username" value="#{usersMB.users.username}" required="true" requiredMessage="Username is required." 
+                                                 pt:placeholder="Username" styleClass="form-control" />
+                                    <h:message for="username" styleClass="field-error" />
+                                </h:panelGroup>
+
+                                <!-- Password -->
+                                <h:panelGroup layout="block" styleClass="user-form-group" rendered="#{not usersMB.editMode}">
+                                    <h:outputLabel for="password" styleClass="form-label"> Password <span class="form-required">*</span>
+                                    </h:outputLabel>
+                                    <h:inputSecret id="password" value="#{usersMB.users.password}" required="true" requiredMessage="Password is required." 
+                                                   pt:placeholder="Enter password" styleClass="form-control" />
+                                    <h:message for="password" styleClass="field-error" />
+                                </h:panelGroup>
+
+                                <!-- Full Name -->
+                                <div class="user-form-group">
+                                    <h:outputLabel for="fullName" styleClass="form-label"> Full Name <span class="form-required">*</span>
+                                    </h:outputLabel>
+                                    <h:inputText id="fullName" value="#{usersMB.users.fullName}" required="true" 
+                                                 requiredMessage="Full name is required." 
+                                                 pt:placeholder="Enter Your Name" styleClass="form-control" />
+                                    <h:message for="fullName" styleClass="field-error" />
+                                </div>
+
+                                <!-- Email -->
+                                <div class="user-form-group">
+                                    <h:outputLabel for="email" styleClass="form-label"> Email Address <span class="form-optional">(Optional)</span>
+                                    </h:outputLabel>
+                                    <h:inputText id="email" value="#{usersMB.users.email}" 
+                                                 pt:placeholder="email@gmail.com" styleClass="form-control" />
+                                    <h:message for="email" styleClass="field-error" />
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="user-form-group">
+                                    <h:outputLabel for="phone" styleClass="form-label"> Phone Number <span class="form-required">*</span>
+                                    </h:outputLabel>
+                                    <h:inputText id="phone" value="#{usersMB.users.phone}" required="true"  requiredMessage="Phone number is required." 
+                                                 pt:placeholder="0841234567" styleClass="form-control" />
+                                    <h:message for="phone" styleClass="field-error" />
+                                </div>
+
+                                <!-- Role -->
+                                <div class="user-form-group">
+                                    <h:outputLabel for="role" styleClass="form-label">
+                                        Role <span class="form-required">*</span>
+                                    </h:outputLabel>
+                                    <h:selectOneMenu id="role" value="#{usersMB.users.role}" required="true"  requiredMessage="Role is required." styleClass="form-select">
+                                        <f:selectItem itemLabel="Customer" itemValue="CUSTOMER" />
+                                        <f:selectItem itemLabel="Admin" itemValue="ADMIN" />
+                                    </h:selectOneMenu>
+                                    <h:message for="role" styleClass="field-error" />
+                                </div>
+
+                                <!-- Status -->
+                                <h:panelGroup layout="block" styleClass="user-form-group" rendered="#{usersMB.editMode}">
+                                    <h:outputLabel for="status" styleClass="form-label"> Account Status <span class="form-required">*</span>
+                                    </h:outputLabel>
+                                    <h:selectOneMenu id="status" value="#{usersMB.users.status}" required="true"  requiredMessage="Status is required." styleClass="form-select">
+                                        <f:selectItem itemLabel="Active" itemValue="ACTIVE" />
+                                        <f:selectItem itemLabel="Inactive" itemValue="INACTIVE" />
+                                    </h:selectOneMenu>
+                                    <h:message for="status" styleClass="field-error" />
+                                </h:panelGroup>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="card-footer">
+                            <h:commandButton value="Cancel" action="list" immediate="true" styleClass="btn btn-outline-secondary" />
+                            <div>
+                                <h:commandButton value="Save Changes" action="#{usersMB.updateUser}" rendered="#{usersMB.editMode}" styleClass="btn btn-primary" />
+                                <h:commandButton value="Create User" action="#{usersMB.insertUser}" rendered="#{not usersMB.editMode}" styleClass="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>#{usersMB.users.fullName} - User Details</title>
+    <h:outputStylesheet library="css" name="font.css" />
+    <h:outputStylesheet library="css" name="app.css" />
+    <h:outputStylesheet library="css" name="users.css" />
+</h:head>
+<h:body>
+    <div class="main-wrapper">
+        <div class="user-page-container">
+            <h:form id="detailForm">
+                <!-- Header  -->
+                <div class="page-header">
+                    <div class="page-header-row">
+                        <div>
+                            <div class="page-pretitle">Users Management</div>
+                            <h1 class="page-title">User Details</h1>
+                        </div>
+                        <div class="page-header-actions">
+                            <h:commandButton value="Back to Users" action="list" immediate="true"
+                                styleClass="btn btn-outline-secondary" />
+                            <h:commandButton value="Edit User" action="#{usersMB.editUser(usersMB.users.id)}"
+                                styleClass="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Header Card -->
+                <div class="user-profile-card">
+                    <div class="profile-card-body">
+                        <div class="profile-header-content">
+                            <!-- Avatar Initial -->
+                            <div class="user-avatar">
+                                <h:outputText
+                                    value="#{usersMB.users.fullName != null and usersMB.users.fullName.length() > 0 ? usersMB.users.fullName.substring(0, 1).toUpperCase() : 'U'}" />
+                            </div>
+
+                            <div class="profile-info-group">
+                                <h2 class="user-profile-name">
+                                    <h:outputText value="#{usersMB.users.fullName}" />
+                                </h2>
+                                <div class="user-profile-meta">
+                                    @
+                                    <h:outputText value="#{usersMB.users.username}" /> | User ID: #
+                                    <h:outputText value="#{usersMB.users.id}" />
+                                </div>
+                                <div class="profile-badge-row">
+                                    <!-- Role Badge -->
+                                    <span
+                                        class="badge-role #{usersMB.users.role == 'ADMIN' ? 'badge-admin' : 'badge-customer'}">
+                                        <h:outputText value="#{usersMB.users.role}" />
+                                    </span>
+                                    <!-- Status Badge -->
+                                    <span
+                                        class="badge-status #{usersMB.users.status == 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">
+                                        <h:outputText value="#{usersMB.users.status}" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Detailed Info Card -->
+                <div class="card">
+                    <div class="detail-card-body">
+                        <!-- Account Information -->
+                        <div class="detail-section">
+                            <h3 class="detail-section-title">Account Information</h3>
+                            <div class="detail-grid-3">
+                                <div class="detail-item">
+                                    <div class="detail-label">Username</div>
+                                    <div class="detail-value detail-value-primary">
+                                        <h:outputText value="#{usersMB.users.username}" />
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Role</div>
+                                    <div class="detail-value">
+                                        <span
+                                            class="badge-role #{usersMB.users.role == 'ADMIN' ? 'badge-admin' : 'badge-customer'}">
+                                            <h:outputText value="#{usersMB.users.role}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Status</div>
+                                    <div class="detail-value">
+                                        <span
+                                            class="badge-status #{usersMB.users.status == 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">
+                                            <h:outputText value="#{usersMB.users.status}" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="detail-section">
+                            <h3 class="detail-section-title">Contact Information</h3>
+                            <div class="detail-grid-2">
+                                <div class="detail-item">
+                                    <div class="detail-label">Email Address</div>
+                                    <div class="detail-value">
+                                        <h:outputText
+                                            value="#{usersMB.users.email != null and usersMB.users.email.length() > 0 ? usersMB.users.email : '—'}" />
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Phone Number</div>
+                                    <div class="detail-value">
+                                        <h:outputText value="#{usersMB.users.phone}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Timestamps -->
+                        <div class="detail-section">
+                            <h3 class="detail-section-title">System Information</h3>
+                            <div class="detail-grid-2">
+                                <div class="detail-item">
+                                    <div class="detail-label">Created Date</div>
+                                    <div class="detail-value detail-value-muted">
+                                        <h:outputText value="#{usersMB.users.createdAt}">
+                                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                                        </h:outputText>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Last Updated</div>
+                                    <div class="detail-value detail-value-muted">
+                                        <h:outputText value="#{usersMB.users.updatedAt}">
+                                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                                        </h:outputText>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+
+</html>
