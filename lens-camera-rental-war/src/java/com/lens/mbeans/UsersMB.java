@@ -2,9 +2,9 @@ package com.lens.mbeans;
 
 import com.lens.ebeans.Users;
 import com.lens.sbeans.UsersFacadeLocal;
+import com.lens.util.FacesUtil;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.Date;
@@ -46,29 +46,29 @@ public class UsersMB implements Serializable {
         boolean hasError = false;
 
         if (usersFacade.isUsernameExists(users.getUsername())) {
-            addFieldError("userForm:username", "Username already exists.");
+            FacesUtil.addFieldError("userForm:username", "Username already exists.");
             hasError = true;
         }
 
         if (users.getPassword() == null || !PASSWORD_PATTERN.matcher(users.getPassword()).matches()) {
-            addFieldError("userForm:password", "Password must be at least 8 characters and contain both letters and numbers.");
+            FacesUtil.addFieldError("userForm:password", "Password must be at least 8 characters and contain both letters and numbers.");
             hasError = true;
         }
 
         if (users.getPhone() == null || !PHONE_PATTERN.matcher(users.getPhone().trim()).matches()) {
-            addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
+            FacesUtil.addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
             hasError = true;
         } else if (usersFacade.isPhoneExists(users.getPhone(), null)) {
-            addFieldError("userForm:phone", "Phone number is already in use.");
+            FacesUtil.addFieldError("userForm:phone", "Phone number is already in use.");
             hasError = true;
         }
 
         if (users.getEmail() != null && !users.getEmail().trim().isEmpty()) {
             if (!EMAIL_PATTERN.matcher(users.getEmail().trim()).matches()) {
-                addFieldError("userForm:email", "Invalid email format.");
+                FacesUtil.addFieldError("userForm:email", "Invalid email format.");
                 hasError = true;
             } else if (usersFacade.isEmailExists(users.getEmail(), null)) {
-                addFieldError("userForm:email", "Email is already in use.");
+                FacesUtil.addFieldError("userForm:email", "Email is already in use.");
                 hasError = true;
             }
         }
@@ -91,7 +91,7 @@ public class UsersMB implements Serializable {
             return "list?faces-redirect=true";
 
         } catch (Exception e) {
-            addErrorMessage("Failed to create user.");
+            FacesUtil.addErrorMessage("Failed to create user.");
             return null;
         }
     }
@@ -111,19 +111,19 @@ public class UsersMB implements Serializable {
         boolean hasError = false;
 
         if (users.getPhone() == null || !PHONE_PATTERN.matcher(users.getPhone().trim()).matches()) {
-            addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
+            FacesUtil.addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
             hasError = true;
         } else if (usersFacade.isPhoneExists(users.getPhone(), users.getId())) {
-            addFieldError("userForm:phone", "Phone number is already in use.");
+            FacesUtil.addFieldError("userForm:phone", "Phone number is already in use.");
             hasError = true;
         }
 
         if (users.getEmail() != null && !users.getEmail().trim().isEmpty()) {
             if (!EMAIL_PATTERN.matcher(users.getEmail().trim()).matches()) {
-                addFieldError("userForm:email", "Invalid email format.");
+                FacesUtil.addFieldError("userForm:email", "Invalid email format.");
                 hasError = true;
             } else if (usersFacade.isEmailExists(users.getEmail(), users.getId())) {
-                addFieldError("userForm:email", "Email is already in use.");
+                FacesUtil.addFieldError("userForm:email", "Email is already in use.");
                 hasError = true;
             }
         }
@@ -140,7 +140,7 @@ public class UsersMB implements Serializable {
             return "list?faces-redirect=true";
 
         } catch (Exception e) {
-            addErrorMessage("Failed to update user.");
+            FacesUtil.addErrorMessage("Failed to update user.");
             return null;
         }
     }
@@ -178,14 +178,6 @@ public class UsersMB implements Serializable {
         this.keyword = "";
         this.role = "";
         this.sortOrder = "DESC";
-    }
-
-    private void addFieldError(String clientId, String message) {
-        FacesContext.getCurrentInstance().addMessage(clientId, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
-    }
-
-    private void addErrorMessage(String message) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
     }
 
     public Users getUsers() {
