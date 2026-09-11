@@ -44,12 +44,6 @@ public class UsersFacade extends AbstractFacade<Users> implements UsersFacadeLoc
 
     @Override
     public List<Users> search(String keyword, String role) {
-        return search(keyword, role, "DESC");
-    }
-
-    @Override
-    public List<Users> search(String keyword, String role, String sortOrder) {
-
         String jpql = "SELECT u FROM Users u "
                 + "WHERE u.status = 'ACTIVE' "
                 + "AND (u.username LIKE :keyword "
@@ -61,8 +55,7 @@ public class UsersFacade extends AbstractFacade<Users> implements UsersFacadeLoc
             jpql += " AND u.role = :role";
         }
 
-        String order = "ASC".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC";
-        jpql += " ORDER BY u.createdAt " + order + ", u.id " + order;
+        jpql += " ORDER BY u.id DESC";
 
         var query = em.createQuery(jpql, Users.class)
                 .setParameter("keyword", "%" + (keyword == null ? "" : keyword.trim()) + "%");
@@ -72,7 +65,6 @@ public class UsersFacade extends AbstractFacade<Users> implements UsersFacadeLoc
         }
 
         return query.getResultList();
-
     }
 
     @Override

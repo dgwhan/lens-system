@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:pt="jakarta.faces.passthrough">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>#{deviceModelsMB.editMode ? 'Edit Device Model' : 'Create Device Model'} - Lens Camera Rental</title>
+    <h:outputStylesheet library="css" name="font.css" />
+    <h:outputStylesheet library="css" name="app.css" />
+    <h:outputStylesheet library="css" name="buttons.css" />
+    <h:outputStylesheet library="css" name="device-model.css" />
+</h:head>
+<h:body>
+    <!-- Error Alert -->
+    <h:panelGroup rendered="#{not empty facesContext.messageList and (facesContext.messageList[0].summary eq 'Failed to create device model.' or facesContext.messageList[0].summary eq 'Failed to update device model.')}">
+        <script type="text/javascript">
+            alert('#{facesContext.messageList[0].summary}');
+        </script>
+    </h:panelGroup>
+
+    <div class="main-wrapper">
+        <div class="form-container">
+            <h:form id="deviceModelForm">
+                <h:inputHidden value="#{deviceModelsMB.deviceModels.id}" rendered="#{deviceModelsMB.editMode}" />
+
+                <!-- Header -->
+                <div class="page-header">
+                    <div class="page-header-row">
+                        <div>
+                            <div class="page-pretitle">Device Models Management</div>
+                            <h1 class="page-title">#{deviceModelsMB.editMode ? 'Edit Device Model' : 'Create New Device Model'}</h1>
+                        </div>
+                        <div>
+                            <h:commandButton value="Back to Models" action="list" immediate="true"
+                                             styleClass="btn btn-outline-secondary" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Form Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">#{deviceModelsMB.editMode ? 'Device Model Information' : 'Model Details'}</h2>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <!-- Name -->
+                            <div class="form-group">
+                                <h:outputLabel for="name" styleClass="form-label">
+                                    Device Model Name <span class="form-required">*</span>
+                                </h:outputLabel>
+                                <h:inputText id="name" value="#{deviceModelsMB.deviceModels.name}" required="true"
+                                             requiredMessage="Device model name is required."
+                                             pt:placeholder="e.g. Sony Alpha A7 IV"
+                                             styleClass="form-control" />
+                                <h:message for="name" styleClass="field-error" />
+                            </div>
+
+                            <!-- Brand -->
+                            <div class="form-group">
+                                <h:outputLabel for="brand" styleClass="form-label">
+                                    Brand <span class="form-required">*</span>
+                                </h:outputLabel>
+                                <h:inputText id="brand" value="#{deviceModelsMB.deviceModels.brand}" required="true"
+                                             requiredMessage="Brand is required."
+                                             pt:placeholder="e.g. Sony, Canon, Nikon"
+                                             styleClass="form-control" />
+                                <h:message for="brand" styleClass="field-error" />
+                            </div>
+
+                            <!-- Model -->
+                            <div class="form-group">
+                                <h:outputLabel for="model" styleClass="form-label">
+                                    Model Code <span class="form-required">*</span>
+                                </h:outputLabel>
+                                <h:inputText id="model" value="#{deviceModelsMB.deviceModels.model}" required="true"
+                                             requiredMessage="Model is required."
+                                             pt:placeholder="e.g. ILCE-7M4"
+                                             styleClass="form-control" />
+                                <h:message for="model" styleClass="field-error" />
+                            </div>
+
+                            <!-- Type -->
+                            <div class="form-group">
+                                <h:outputLabel for="type" styleClass="form-label">
+                                    Type <span class="form-required">*</span>
+                                </h:outputLabel>
+                                <h:inputText id="type" value="#{deviceModelsMB.deviceModels.type}" required="true"
+                                             requiredMessage="Type is required."
+                                             pt:placeholder="e.g. Camera, Lens, Accessory"
+                                             styleClass="form-control" />
+                                <h:message for="type" styleClass="field-error" />
+                            </div>
+
+                            <!-- Rental Price -->
+                            <div class="form-group">
+                                <h:outputLabel for="rentalPrice" styleClass="form-label">
+                                    Rental Price (VND) <span class="form-required">*</span>
+                                </h:outputLabel>
+                                <h:inputText id="rentalPrice" value="#{deviceModelsMB.deviceModels.rentalPrice}"
+                                             required="true" requiredMessage="Rental price is required."
+                                             pt:placeholder="e.g. 250,000" pt:inputmode="numeric"
+                                             styleClass="form-control money-input">
+                                    <f:validateDoubleRange minimum="0" />
+                                </h:inputText>
+                                <h:message for="rentalPrice" styleClass="field-error" />
+                            </div>
+
+                            <!-- Deposit Amount -->
+                            <div class="form-group">
+                                <h:outputLabel for="depositAmount" styleClass="form-label">
+                                    Deposit Amount (VND) <span class="form-required">*</span>
+                                </h:outputLabel>
+                                <h:inputText id="depositAmount" value="#{deviceModelsMB.deviceModels.depositAmount}"
+                                             required="true" requiredMessage="Deposit amount is required."
+                                             pt:placeholder="e.g. 5,000,000" pt:inputmode="numeric"
+                                             styleClass="form-control money-input">
+                                    <f:validateDoubleRange minimum="0" />
+                                </h:inputText>
+                                <h:message for="depositAmount" styleClass="field-error" />
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <h:outputLabel for="description" styleClass="form-label">
+                                    Description <span class="form-optional">(Optional)</span>
+                                </h:outputLabel>
+                                <h:inputTextarea id="description" value="#{deviceModelsMB.deviceModels.description}"
+                                                 rows="3" pt:placeholder="Enter device model description..."
+                                                 styleClass="form-control"
+                                                 style="width: 100%; min-height: 80px; resize: vertical;" />
+                                <h:message for="description" styleClass="field-error" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card-footer">
+                        <h:commandButton value="Cancel" action="list" immediate="true"
+                                         styleClass="btn btn-outline-secondary" />
+                        <div>
+                            <h:commandButton value="Save Changes" action="#{deviceModelsMB.updateDeviceModel}"
+                                             rendered="#{deviceModelsMB.editMode}" styleClass="btn btn-primary" />
+                            <h:commandButton value="Create Device Model" action="#{deviceModelsMB.insertDeviceModel}"
+                                             rendered="#{not deviceModelsMB.editMode}" styleClass="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    //<![CDATA[
+        document.addEventListener("DOMContentLoaded", function () {
+            // Format money VND input
+            var moneyInputs = document.querySelectorAll(".money-input");
+            moneyInputs.forEach(function (input) {
+                input.addEventListener("input", function () {
+                    var val = this.value.replace(/\D/g, "");
+                    this.value = val ? Number(val).toLocaleString("vi-VN") : "";
+                });
+            });
+
+            // Strip non-digits before submit
+            var form = document.getElementById("deviceModelForm");
+            if (form) {
+                form.addEventListener("submit", function () {
+                    moneyInputs.forEach(function (i) { i.value = i.value.replace(/\D/g, ""); });
+                });
+            }
+
+            // Auto resize description textarea
+            var desc = document.getElementById("deviceModelForm:description");
+            if (desc) {
+                var resize = function () { desc.style.height = "auto"; desc.style.height = Math.max(desc.scrollHeight + 2, 80) + "px"; };
+                desc.addEventListener("input", resize);
+                resize();
+            }
+        });
+    //]]>
+    </script>
+</h:body>
+</html>

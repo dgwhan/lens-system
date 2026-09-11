@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:pt="jakarta.faces.passthrough">
+    <h:head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Device Models Management - Lens Camera Rental</title>
+        <h:outputStylesheet library="css" name="font.css" />
+        <h:outputStylesheet library="css" name="app.css" />
+        <h:outputStylesheet library="css" name="buttons.css" />
+        <h:outputStylesheet library="css" name="table.css" />
+        <h:outputStylesheet library="css" name="device-model.css" />
+    </h:head>
+    <h:body>
+        <!-- Flash Alert Message (Create / Update notification) -->
+        <h:panelGroup rendered="#{not empty flash.actionAlert}">
+            <script type="text/javascript">
+                alert('#{flash.actionAlert}');
+            </script>
+        </h:panelGroup>
+
+        <script type="text/javascript">
+            function onDeleteEvent(data) {
+                if (data.status === 'success') {
+                    alert('Device model deleted successfully.');
+                    window.location.reload();
+                }
+            }
+        </script>
+
+        <div class="main-wrapper">
+            <h:form id="deviceModelsForm">
+                <div class="page-header">
+                    <div class="page-header-row">
+                        <div>
+                            <div class="page-pretitle">Overview</div>
+                            <h1 class="page-title">Device Models Management</h1>
+                        </div>
+                        <div>
+                            <h:commandButton value="+ Add Model"
+                                             action="#{deviceModelsMB.newDeviceModel()}"
+                                             styleClass="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <h:panelGroup id="searchBar" layout="block" styleClass="users-search">
+                    <h:inputText id="keyword" value="#{deviceModelsMB.keyword}"
+                                 pt:placeholder="Search model name, brand, model code, type..."
+                                 styleClass="form-control search-input">
+                        <f:ajax event="keyup" delay="300" render="deviceModelsTableWrapper" />
+                    </h:inputText>
+
+                    <h:commandButton value="Search" action="list" styleClass="btn btn-primary">
+                        <f:ajax execute="@form" render="deviceModelsTableWrapper" />
+                    </h:commandButton>
+
+                    <h:commandButton value="Reset" action="#{deviceModelsMB.resetFilter()}" styleClass="btn btn-outline-secondary">
+                        <f:ajax render="searchBar deviceModelsTableWrapper" />
+                    </h:commandButton>
+                </h:panelGroup>
+
+                <div class="card">
+                    <h:panelGroup id="deviceModelsTableWrapper" layout="block" styleClass="table-wrapper">
+                        <h:dataTable id="deviceModelsTable"
+                                     value="#{deviceModelsMB.showAllDeviceModel()}"
+                                     var="dm"
+                                     styleClass="data-table">
+
+                            <!-- ID -->
+                            <h:column>
+                                <f:facet name="header">ID</f:facet>
+                                <h:outputText value="#{dm.id}" />
+                            </h:column>
+
+                            <!-- Image -->
+                            <h:column>
+                                <f:facet name="header">Image</f:facet>
+                                <img src="#{deviceModelsMB.getImageUrl(dm.imageUrl)}"
+                                     alt="#{dm.name}"
+                                     class="model-table-thumb"
+                                     onerror="this.onerror=null;this.src='#{deviceModelsMB.defaultImageUrl}';" />
+                            </h:column>
+
+                            <!-- Name -->
+                            <h:column>
+                                <f:facet name="header">Name</f:facet>
+                                <h:outputText value="#{dm.name}" style="font-weight: 600;" />
+                            </h:column>
+
+                            <!-- Brand -->
+                            <h:column>
+                                <f:facet name="header">Brand</f:facet>
+                                <h:outputText value="#{dm.brand}" />
+                            </h:column>
+
+                            <!-- Model -->
+                            <h:column>
+                                <f:facet name="header">Model</f:facet>
+                                <h:outputText value="#{dm.model}" />
+                            </h:column>
+
+                            <!-- Type -->
+                            <h:column>
+                                <f:facet name="header">Type</f:facet>
+                                <h:outputText value="#{dm.type}" />
+                            </h:column>
+
+                            <!-- Rental Price -->
+                            <h:column>
+                                <f:facet name="header">Rental Price</f:facet>
+                                <h:outputText value="#{dm.rentalPrice}" style="font-weight: 600;">
+                                    <f:convertNumber pattern="#,##0 VND" />
+                                </h:outputText>
+                            </h:column>
+
+                            <!-- Deposit Amount -->
+                            <h:column>
+                                <f:facet name="header">Deposit</f:facet>
+                                <h:outputText value="#{dm.depositAmount}" style="font-weight: 600;">
+                                    <f:convertNumber pattern="#,##0 VND" />
+                                </h:outputText>
+                            </h:column>
+
+                            <!-- Created At -->
+                            <h:column>
+                                <f:facet name="header">Created At</f:facet>
+                                <h:outputText value="#{dm.createdAt}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                                </h:outputText>
+                            </h:column>
+
+                            <!-- Actions -->
+                            <h:column>
+                                <f:facet name="header">Action</f:facet>
+                                <div class="table-row-actions">
+                                    <h:commandButton value="Detail"
+                                                     action="#{deviceModelsMB.detailDeviceModel(dm.id)}"
+                                                     styleClass="btn btn-sm btn-outline-info" />
+                                    <h:commandButton value="Edit"
+                                                     action="#{deviceModelsMB.editDeviceModel(dm.id)}"
+                                                     styleClass="btn btn-sm btn-outline-primary" />
+                                    <h:commandButton value="Delete"
+                                                     action="#{deviceModelsMB.deleteDeviceModel(dm.id)}"
+                                                     styleClass="btn btn-sm btn-outline-danger"
+                                                     onclick="if (!confirm('Are you sure you want to delete this device model?')) return false;">
+                                        <f:ajax render="deviceModelsTableWrapper" onevent="onDeleteEvent" />
+                                    </h:commandButton>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGroup>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</html>

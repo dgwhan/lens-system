@@ -6,12 +6,13 @@
 <h:head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>#{usersMB.users.fullName} - User Details</title>
+    <title>#{deviceModelsMB.deviceModels.name} - Device Model Details</title>
     <h:outputStylesheet library="css" name="font.css" />
     <h:outputStylesheet library="css" name="app.css" />
     <h:outputStylesheet library="css" name="buttons.css" />
     <h:outputStylesheet library="css" name="badges.css" />
     <h:outputStylesheet library="css" name="detail.css" />
+    <h:outputStylesheet library="css" name="device-model.css" />
 </h:head>
 <h:body>
     <div class="main-wrapper">
@@ -21,14 +22,14 @@
                 <div class="detail-header">
                     <div class="detail-header-row">
                         <div>
-                            <div class="detail-eyebrow">USERS</div>
-                            <h1 class="detail-title">User Details</h1>
+                            <div class="detail-eyebrow">DEVICE MODELS</div>
+                            <h1 class="detail-title">Device Model Details</h1>
                         </div>
                         <div class="detail-actions">
                             <h:commandButton value="Back" action="list" immediate="true"
                                              styleClass="btn btn-outline-secondary" />
-                            <h:commandButton value="Edit User"
-                                             action="#{usersMB.editUser(usersMB.users.id)}"
+                            <h:commandButton value="Edit Model"
+                                             action="#{deviceModelsMB.editDeviceModel(deviceModelsMB.deviceModels.id)}"
                                              styleClass="btn btn-primary" />
                         </div>
                     </div>
@@ -45,37 +46,22 @@
                             </div>
                             <div class="detail-card-body">
                                 <div class="detail-identity-row">
-                                    <div class="detail-avatar">
-                                        <h:outputText value="#{usersMB.users.fullName != null and usersMB.users.fullName.length() > 0 ? usersMB.users.fullName.substring(0, 1).toUpperCase() : 'U'}" />
-                                    </div>
+                                    <img src="#{deviceModelsMB.modelImageUrl}"
+                                         alt="#{deviceModelsMB.deviceModels.name}"
+                                         class="detail-image"
+                                         onerror="this.onerror=null;this.src='#{deviceModelsMB.defaultImageUrl}';" />
 
                                     <div class="detail-identity-content">
                                         <div class="detail-identity-field">
-                                            <div class="detail-label">Full Name</div>
+                                            <div class="detail-label">Model Name</div>
                                             <h3 class="detail-identity-title">
-                                                <h:outputText value="#{usersMB.users.fullName}" />
+                                                <h:outputText value="#{deviceModelsMB.deviceModels.name}" />
                                             </h3>
                                         </div>
-                                        <div class="detail-identity-meta-grid">
-                                            <div class="detail-item">
-                                                <div class="detail-label">User ID</div>
-                                                <div class="detail-value detail-value-strong">
-                                                    <h:outputText value="User ##{usersMB.users.id}" />
-                                                </div>
-                                            </div>
-                                            <div class="detail-item">
-                                                <div class="detail-label">Username</div>
-                                                <div class="detail-value">
-                                                    <h:outputText value="@#{usersMB.users.username}" />
-                                                </div>
-                                            </div>
-                                            <div class="detail-item">
-                                                <div class="detail-label">Role</div>
-                                                <div>
-                                                    <span class="badge-role #{usersMB.users.role == 'ADMIN' ? 'badge-admin' : 'badge-customer'}">
-                                                        <h:outputText value="#{usersMB.users.role}" />
-                                                    </span>
-                                                </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Model ID</div>
+                                            <div class="detail-value detail-value-strong">
+                                                <h:outputText value="Model ##{deviceModelsMB.deviceModels.id}" />
                                             </div>
                                         </div>
                                     </div>
@@ -83,29 +69,35 @@
                             </div>
                         </div>
 
-                        <!-- Account & Contact Details Card -->
+                        <!-- Specifications Card (Technical Specifications, Classification & Description) -->
                         <div class="detail-card">
                             <div class="detail-card-header">
-                                <h2 class="detail-card-title">Account &amp; Contact Details</h2>
+                                <h2 class="detail-card-title">Specifications</h2>
                             </div>
                             <div class="detail-card-body">
-                                <div class="detail-grid-3">
+                                <div class="detail-grid-specs">
                                     <div class="detail-item">
-                                        <div class="detail-label">Username</div>
-                                        <div class="detail-value">
-                                            <h:outputText value="#{usersMB.users.username}" />
+                                        <div class="detail-label">Brand</div>
+                                        <div class="detail-value detail-value-strong">
+                                            <h:outputText value="#{deviceModelsMB.deviceModels.brand}" />
                                         </div>
                                     </div>
                                     <div class="detail-item">
-                                        <div class="detail-label">Email Address</div>
-                                        <div class="detail-value #{empty usersMB.users.email ? 'detail-empty' : ''}">
-                                            <h:outputText value="#{not empty usersMB.users.email ? usersMB.users.email : 'No email provided.'}" />
+                                        <div class="detail-label">Model Code</div>
+                                        <div class="detail-value">
+                                            <h:outputText value="#{deviceModelsMB.deviceModels.model}" />
                                         </div>
                                     </div>
                                     <div class="detail-item">
-                                        <div class="detail-label">Phone Number</div>
+                                        <div class="detail-label">Type</div>
                                         <div class="detail-value">
-                                            <h:outputText value="#{usersMB.users.phone}" />
+                                            <h:outputText value="#{deviceModelsMB.deviceModels.type}" />
+                                        </div>
+                                    </div>
+                                    <div class="detail-item detail-item-full">
+                                        <div class="detail-label">Description</div>
+                                        <div class="detail-value #{empty deviceModelsMB.deviceModels.description ? 'detail-empty' : ''}">
+                                            <h:outputText value="#{not empty deviceModelsMB.deviceModels.description ? deviceModelsMB.deviceModels.description : 'No description provided.'}" />
                                         </div>
                                     </div>
                                 </div>
@@ -119,9 +111,39 @@
                         <div class="detail-card">
                             <div class="detail-card-header detail-status-card-header">
                                 <h2 class="detail-card-title">Status</h2>
-                                <span class="badge-status #{usersMB.users.status == 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">
-                                    <h:outputText value="#{usersMB.users.status}" />
-                                </span>
+                                <span class="badge-status badge-active">Active</span>
+                            </div>
+                        </div>
+
+                        <!-- Pricing Card -->
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h2 class="detail-card-title">Pricing</h2>
+                            </div>
+                            <div class="detail-card-body">
+                                <div class="detail-price-list">
+                                    <div class="detail-price-item">
+                                        <div class="detail-label">Rental Price</div>
+                                        <div class="detail-price-row">
+                                            <span class="detail-price-value">
+                                                <h:outputText value="#{deviceModelsMB.deviceModels.rentalPrice}">
+                                                    <f:convertNumber pattern="#,##0 VND" />
+                                                </h:outputText>
+                                            </span>
+                                            <span class="detail-price-unit">/(per day)</span>
+                                        </div>
+                                    </div>
+                                    <div class="detail-price-item">
+                                        <div class="detail-label">Deposit</div>
+                                        <div class="detail-price-row">
+                                            <span class="detail-price-value">
+                                                <h:outputText value="#{deviceModelsMB.deviceModels.depositAmount}">
+                                                    <f:convertNumber pattern="#,##0 VND" />
+                                                </h:outputText>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -135,7 +157,7 @@
                                     <div class="detail-meta-row">
                                         <span class="detail-meta-label">Created At</span>
                                         <span class="detail-meta-value">
-                                            <h:outputText value="#{usersMB.users.createdAt}">
+                                            <h:outputText value="#{deviceModelsMB.deviceModels.createdAt}">
                                                 <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
                                             </h:outputText>
                                         </span>
@@ -143,7 +165,7 @@
                                     <div class="detail-meta-row">
                                         <span class="detail-meta-label">Updated At</span>
                                         <span class="detail-meta-value">
-                                            <h:outputText value="#{usersMB.users.updatedAt}">
+                                            <h:outputText value="#{deviceModelsMB.deviceModels.updatedAt}">
                                                 <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
                                             </h:outputText>
                                         </span>

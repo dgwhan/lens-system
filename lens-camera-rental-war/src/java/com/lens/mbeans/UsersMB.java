@@ -34,6 +34,7 @@ public class UsersMB implements Serializable {
     public UsersMB() {
     }
 
+    //insert
     public String newUser() {
         users = new Users();
         users.setRole("CUSTOMER");
@@ -45,32 +46,24 @@ public class UsersMB implements Serializable {
     public String insertUser() {
         boolean hasError = false;
 
-        if (usersFacade.isUsernameExists(users.getUsername())) {
-            FacesUtil.addFieldError("userForm:username", "Username already exists.");
+        if (isDuplicateUsername()) {
             hasError = true;
         }
 
-        if (users.getPassword() == null || !PASSWORD_PATTERN.matcher(users.getPassword()).matches()) {
-            FacesUtil.addFieldError("userForm:password", "Password must be at least 8 characters and contain both letters and numbers.");
+        if (!isValidPassword()) {
             hasError = true;
         }
 
-        if (users.getPhone() == null || !PHONE_PATTERN.matcher(users.getPhone().trim()).matches()) {
-            FacesUtil.addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
+        if (!isValidPhone()) {
             hasError = true;
-        } else if (usersFacade.isPhoneExists(users.getPhone(), null)) {
-            FacesUtil.addFieldError("userForm:phone", "Phone number is already in use.");
+        } else if (isDuplicatePhone(null)) {
             hasError = true;
         }
 
-        if (users.getEmail() != null && !users.getEmail().trim().isEmpty()) {
-            if (!EMAIL_PATTERN.matcher(users.getEmail().trim()).matches()) {
-                FacesUtil.addFieldError("userForm:email", "Invalid email format.");
-                hasError = true;
-            } else if (usersFacade.isEmailExists(users.getEmail(), null)) {
-                FacesUtil.addFieldError("userForm:email", "Email is already in use.");
-                hasError = true;
-            }
+        if (!isValidEmail()) {
+            hasError = true;
+        } else if (isDuplicateEmail(null)) {
+            hasError = true;
         }
 
         if (hasError) {
@@ -91,41 +84,32 @@ public class UsersMB implements Serializable {
             return "list?faces-redirect=true";
 
         } catch (Exception e) {
+            e.printStackTrace();
             FacesUtil.addErrorMessage("Failed to create user.");
             return null;
         }
     }
 
+    //open edit form
     public String editUser(Integer id) {
         users = usersFacade.find(id);
         editMode = true;
         return "form";
     }
 
-    public String detailUser(Integer id) {
-        users = usersFacade.find(id);
-        return "detail";
-    }
-
     public String updateUser() {
         boolean hasError = false;
 
-        if (users.getPhone() == null || !PHONE_PATTERN.matcher(users.getPhone().trim()).matches()) {
-            FacesUtil.addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
+        if (!isValidPhone()) {
             hasError = true;
-        } else if (usersFacade.isPhoneExists(users.getPhone(), users.getId())) {
-            FacesUtil.addFieldError("userForm:phone", "Phone number is already in use.");
+        } else if (isDuplicatePhone(users.getId())) {
             hasError = true;
         }
 
-        if (users.getEmail() != null && !users.getEmail().trim().isEmpty()) {
-            if (!EMAIL_PATTERN.matcher(users.getEmail().trim()).matches()) {
-                FacesUtil.addFieldError("userForm:email", "Invalid email format.");
-                hasError = true;
-            } else if (usersFacade.isEmailExists(users.getEmail(), users.getId())) {
-                FacesUtil.addFieldError("userForm:email", "Email is already in use.");
-                hasError = true;
-            }
+        if (!isValidEmail()) {
+            hasError = true;
+        } else if (isDuplicateEmail(users.getId())) {
+            hasError = true;
         }
 
         if (hasError) {
@@ -140,11 +124,19 @@ public class UsersMB implements Serializable {
             return "list?faces-redirect=true";
 
         } catch (Exception e) {
+            e.printStackTrace();
             FacesUtil.addErrorMessage("Failed to update user.");
             return null;
         }
     }
 
+    //detail
+    public String detailUser(Integer id) {
+        users = usersFacade.find(id);
+        return "detail";
+    }
+
+    //delete
     public void deleteUser(Integer id) {
         try {
             Users u = usersFacade.find(id);
@@ -152,32 +144,90 @@ public class UsersMB implements Serializable {
                 usersFacade.remove(u);
             }
         } catch (Exception e) {
-            // error
+            e.printStackTrace();
         }
     }
 
-    private String sortOrder = "DESC";
-
+    //list user
     public List<Users> showAllUsers() {
         return usersFacade.findAll();
     }
 
     public List<Users> getUsersList() {
-        return usersFacade.search(keyword, role, sortOrder);
+        return usersFacade.search(keyword, role);
     }
 
-    public void toggleSortOrder() {
-        if ("DESC".equalsIgnoreCase(this.sortOrder)) {
-            this.sortOrder = "ASC";
-        } else {
-            this.sortOrder = "DESC";
-        }
-    }
-
+    //reset search
     public void resetFilter() {
         this.keyword = "";
         this.role = "";
-        this.sortOrder = "DESC";
+    }
+
+    //validate
+    private boolean isDuplicateUsername() {
+        if (usersFacade.isUsernameExists(users.getUsername())) {
+            FacesUtil.addFieldError("userForm:username", "Username already exists.");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isDuplicatePhone(Integer excludeId) {
+        if (users.getPhone() != null && !users.getPhone().trim().isEmpty()) {
+            if (usersFacade.isPhoneExists(users.getPhone().trim(), excludeId)) {
+                FacesUtil.addFieldError("userForm:phone", "Phone number is already in use.");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isDuplicateEmail(Integer excludeId) {
+        if (users.getEmail() != null && !users.getEmail().trim().isEmpty()) {
+            if (usersFacade.isEmailExists(users.getEmail().trim(), excludeId)) {
+                FacesUtil.addFieldError("userForm:email", "Email is already in use.");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isUsernameExists(String username) {
+        return usersFacade.isUsernameExists(username);
+    }
+
+    public boolean isPhoneExists(String phone, Integer id) {
+        return usersFacade.isPhoneExists(phone, id);
+    }
+
+    public boolean isEmailExists(String email, Integer id) {
+        return usersFacade.isEmailExists(email, id);
+    }
+
+    private boolean isValidPassword() {
+        if (users.getPassword() == null || !PASSWORD_PATTERN.matcher(users.getPassword()).matches()) {
+            FacesUtil.addFieldError("userForm:password", "Password must be at least 8 characters and contain both letters and numbers.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidPhone() {
+        if (users.getPhone() == null || !PHONE_PATTERN.matcher(users.getPhone().trim()).matches()) {
+            FacesUtil.addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidEmail() {
+        if (users.getEmail() != null && !users.getEmail().trim().isEmpty()) {
+            if (!EMAIL_PATTERN.matcher(users.getEmail().trim()).matches()) {
+                FacesUtil.addFieldError("userForm:email", "Invalid email format.");
+                return false;
+            }
+        }
+        return true;
     }
 
     public Users getUsers() {
@@ -210,13 +260,5 @@ public class UsersMB implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public String getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
     }
 }

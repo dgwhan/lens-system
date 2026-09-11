@@ -17,3 +17,6 @@ dist/
 # os
 .DS_Store
 Thumbs.db
+
+# ide
+.vscode/

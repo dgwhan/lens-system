@@ -1,5 +1,5 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:f="jakarta.faces.core"
@@ -11,6 +11,8 @@
         <title>Users Management - Lens Camera Rental</title>
         <h:outputStylesheet library="css" name="font.css" />
         <h:outputStylesheet library="css" name="app.css" />
+        <h:outputStylesheet library="css" name="buttons.css" />
+        <h:outputStylesheet library="css" name="table.css" />
         <h:outputStylesheet library="css" name="users.css" />
     </h:head>
     <h:body>
@@ -31,7 +33,7 @@
         </script>
 
         <div class="main-wrapper">
-            <h:form>
+            <h:form id="usersForm">
                 <!-- Page Header -->
                 <div class="page-header">
                     <div class="page-header-row">
@@ -70,8 +72,8 @@
 
                 <!-- Users Table -->
                 <div class="card">
-                    <h:panelGroup id="usersTableWrapper" layout="block" styleClass="user-table-wrapper">
-                        <h:dataTable id="usersTable" value="#{usersMB.usersList}" var="user" styleClass="user-table">
+                    <h:panelGroup id="usersTableWrapper" layout="block" styleClass="table-wrapper">
+                        <h:dataTable id="usersTable" value="#{usersMB.usersList}" var="user" styleClass="data-table">
                             <!-- ID -->
                             <h:column>
                                 <f:facet name="header">ID</f:facet>

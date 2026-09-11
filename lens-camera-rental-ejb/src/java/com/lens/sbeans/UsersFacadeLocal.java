@@ -27,8 +27,6 @@ public interface UsersFacadeLocal {
     
     List<Users> search(String keyword, String role);
 
-    List<Users> search(String keyword, String role, String sortOrder);
-
     boolean isUsernameExists(String username);
 
     boolean isEmailExists(String email, Integer id);
