@@ -46,12 +46,6 @@ public class DeviceModelsFacade extends AbstractFacade<DeviceModels> implements 
         return count != null && count > 0;
     }
 
-    /**
-     * Kiem tra su ton tai cua ten model (khong phan biet hoa thuong)
-     * 
-     * @param name Ten thiet bi/model
-     * @param id   ID cua model hien tai (dung khi edit de loai tru chinh no)
-     */
     @Override
     public boolean isDeviceModelNameExists(String name, Integer id) {
         if (name == null || name.trim().isEmpty()) {

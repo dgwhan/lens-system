@@ -20,3 +20,7 @@ Thumbs.db
 
 # ide
 .vscode/
+
+# uploaded images
+**/web/resources/images/*/*
+!**/web/resources/images/*/.gitkeep

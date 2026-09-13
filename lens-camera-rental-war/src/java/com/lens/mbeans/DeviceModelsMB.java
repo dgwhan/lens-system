@@ -2,11 +2,13 @@ package com.lens.mbeans;
 
 import com.lens.ebeans.DeviceModels;
 import com.lens.sbeans.DeviceModelsFacadeLocal;
+import com.lens.util.ImageUtil;
 import com.lens.util.FacesUtil;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
+import jakarta.servlet.http.Part;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -19,16 +21,14 @@ import java.util.List;
 @SessionScoped
 public class DeviceModelsMB implements Serializable {
 
-    private static final String DEFAULT_IMAGE_NAME = "default-img.png";
-    private static final String DEFAULT_IMAGE_LIBRARY = "images";
-    private static final String IMAGE_PATH_PREFIX = "device/";
-
     @EJB
     private DeviceModelsFacadeLocal deviceModelsFacade;
 
     private DeviceModels deviceModels = new DeviceModels();
     private boolean editMode;
     private String keyword = "";
+    private Part imagePart;
+    private boolean removeCurrentImage;
 
     public DeviceModelsMB() {
     }
@@ -36,7 +36,9 @@ public class DeviceModelsMB implements Serializable {
     //insert
     public String newDeviceModel() {
         deviceModels = new DeviceModels();
-        deviceModels.setImageUrl(DEFAULT_IMAGE_NAME);
+        deviceModels.setImageUrl(ImageUtil.DEFAULT_IMAGE_NAME);
+        imagePart = null;
+        removeCurrentImage = false;
         editMode = false;
         return "form";
     }
@@ -53,11 +55,17 @@ public class DeviceModelsMB implements Serializable {
             return null;
         }
 
-        try {
-            if (deviceModels.getImageUrl() == null || deviceModels.getImageUrl().isBlank()) {
-                deviceModels.setImageUrl(DEFAULT_IMAGE_NAME);
+        if (imagePart != null && imagePart.getSize() > 0) {
+            String uploadedImage = ImageUtil.processUpload(imagePart, "device", "deviceModelForm:imageFile", "model_");
+            if (uploadedImage == null || FacesContext.getCurrentInstance().isValidationFailed()) {
+                return null;
             }
+            deviceModels.setImageUrl(uploadedImage);
+        } else {
+            deviceModels.setImageUrl(ImageUtil.DEFAULT_IMAGE_NAME);
+        }
 
+        try {
             Date now = new Date();
             deviceModels.setCreatedAt(now);
             deviceModels.setUpdatedAt(now);
@@ -72,14 +80,19 @@ public class DeviceModelsMB implements Serializable {
         }
     }
 
-    
     //open edit form
     public String editDeviceModel(Integer id) {
         deviceModels = deviceModelsFacade.find(id);
         if (deviceModels == null) {
             return "list?faces-redirect=true";
         }
+
+        System.out.println("edit img: " + deviceModels.getImageUrl());
+
+        imagePart = null;
+        removeCurrentImage = false;
         editMode = true;
+
         return "form";
     }
 
@@ -95,16 +108,44 @@ public class DeviceModelsMB implements Serializable {
             return null;
         }
 
+        //lưu tên ảnh cũ
+        String oldImage = deviceModels.getImageUrl();
+
         try {
+            //upload ảnh mới nếu người dùng chọn
+            String uploadedImage = null;
+            if (imagePart != null && imagePart.getSize() > 0) {
+                uploadedImage = ImageUtil.processUpload(imagePart, "device", "deviceModelForm:imageFile", "model_");
+                if (uploadedImage == null || FacesContext.getCurrentInstance().isValidationFailed()) {
+                    return null;
+                }
+                deviceModels.setImageUrl(uploadedImage);
+            } else if (removeCurrentImage) {
+                deviceModels.setImageUrl(ImageUtil.DEFAULT_IMAGE_NAME);
+            }
+
+            //giữ ảnh cũ nếu không chọn ảnh mới và không xóa
             if (deviceModels.getImageUrl() == null || deviceModels.getImageUrl().isBlank()) {
-                deviceModels.setImageUrl(DEFAULT_IMAGE_NAME);
+                deviceModels.setImageUrl(ImageUtil.DEFAULT_IMAGE_NAME);
             }
 
             deviceModels.setUpdatedAt(new Date());
+
+            //cập nhật database
             deviceModelsFacade.edit(deviceModels);
+
+            //xóa ảnh cũ sau khi cập nhật database thành công
+            if ((uploadedImage != null || removeCurrentImage) && oldImage != null && !oldImage.equals(ImageUtil.DEFAULT_IMAGE_NAME)) {
+                ImageUtil.deleteImage(oldImage, "device");
+            }
+
+            //reset file upload
+            imagePart = null;
+            removeCurrentImage = false;
 
             FacesContext.getCurrentInstance().getExternalContext().getFlash().put("actionAlert", "Device model updated successfully.");
             return "list?faces-redirect=true";
+
         } catch (Exception e) {
             e.printStackTrace();
             FacesUtil.addErrorMessage("Failed to update device model.");
@@ -118,7 +159,6 @@ public class DeviceModelsMB implements Serializable {
         return deviceModels != null ? "detail" : "list?faces-redirect=true";
     }
 
-    
     //delete
     public void deleteDeviceModel(Integer id) {
         try {
@@ -141,7 +181,6 @@ public class DeviceModelsMB implements Serializable {
         return deviceModelsFacade.search(keyword);
     }
 
-    
     //reset search
     public void resetFilter() {
         this.keyword = "";
@@ -169,52 +208,17 @@ public class DeviceModelsMB implements Serializable {
         return deviceModelsFacade.isDeviceModelNameExists(name, id);
     }
 
-    
     //set default img device
     public String getDefaultImageUrl() {
-        try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            if (context != null) {
-                return context.getApplication()
-                        .getResourceHandler()
-                        .createResource(DEFAULT_IMAGE_NAME, DEFAULT_IMAGE_LIBRARY)
-                        .getRequestPath();
-            }
-        } catch (Exception ignored) {
-        }
-        return "/resources/images/" + DEFAULT_IMAGE_NAME;
+        return ImageUtil.getDefaultImageUrl();
     }
 
     public String getImageUrl(String imageUrl) {
-        if (imageUrl == null || imageUrl.isBlank()) {
-            return getDefaultImageUrl();
-        }
-
-        String path = imageUrl.trim();
-        if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("/")) {
-            return path;
-        }
-
-        try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            if (context != null) {
-                String resourceName = (path.equals(DEFAULT_IMAGE_NAME) || path.startsWith(IMAGE_PATH_PREFIX))
-                        ? path
-                        : IMAGE_PATH_PREFIX + path;
-
-                return context.getApplication()
-                        .getResourceHandler()
-                        .createResource(resourceName, DEFAULT_IMAGE_LIBRARY)
-                        .getRequestPath();
-            }
-        } catch (Exception ignored) {
-        }
-
-        return path;
+        return ImageUtil.getDeviceImageUrl(imageUrl);
     }
 
     public String getModelImageUrl() {
-        return getImageUrl(deviceModels != null ? deviceModels.getImageUrl() : null);
+        return ImageUtil.getDeviceImageUrl(deviceModels != null ? deviceModels.getImageUrl() : null);
     }
 
     public DeviceModels getDeviceModels() {
@@ -240,4 +244,33 @@ public class DeviceModelsMB implements Serializable {
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
+
+    public Part getImagePart() {
+        return imagePart;
+    }
+
+    public void setImagePart(Part imagePart) {
+        this.imagePart = imagePart;
+    }
+
+    public boolean isRemoveCurrentImage() {
+        return removeCurrentImage;
+    }
+
+    public void setRemoveCurrentImage(boolean removeCurrentImage) {
+        this.removeCurrentImage = removeCurrentImage;
+    }
+
+    public boolean isHasCustomImage() {
+        if (deviceModels == null) {
+            return false;
+        }
+        String img = deviceModels.getImageUrl();
+        return img != null && !img.trim().isEmpty() && !img.equalsIgnoreCase(ImageUtil.DEFAULT_IMAGE_NAME);
+    }
+
+    public boolean getHasCustomImage() {
+        return isHasCustomImage();
+    }
+
 }

@@ -15,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -69,15 +68,14 @@ public class DeviceModels implements Serializable {
     @Size(max = 500)
     @Column(name = "description")
     private String description;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "rental_price")
-    private BigDecimal rentalPrice;
+    private long rentalPrice;
     @Basic(optional = false)
     @NotNull
     @Column(name = "deposit_amount")
-    private BigDecimal depositAmount;
+    private long depositAmount;
     @Basic(optional = false)
     @NotNull
     @Column(name = "created_at")
@@ -99,7 +97,7 @@ public class DeviceModels implements Serializable {
         this.id = id;
     }
 
-    public DeviceModels(Integer id, String name, String type, String brand, String model, BigDecimal rentalPrice, BigDecimal depositAmount, Date createdAt, Date updatedAt) {
+    public DeviceModels(Integer id, String name, String type, String brand, String model, long rentalPrice, long depositAmount, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -159,19 +157,19 @@ public class DeviceModels implements Serializable {
         this.description = description;
     }
 
-    public BigDecimal getRentalPrice() {
+    public long getRentalPrice() {
         return rentalPrice;
     }
 
-    public void setRentalPrice(BigDecimal rentalPrice) {
+    public void setRentalPrice(long rentalPrice) {
         this.rentalPrice = rentalPrice;
     }
 
-    public BigDecimal getDepositAmount() {
+    public long getDepositAmount() {
         return depositAmount;
     }
 
-    public void setDepositAmount(BigDecimal depositAmount) {
+    public void setDepositAmount(long depositAmount) {
         this.depositAmount = depositAmount;
     }
 

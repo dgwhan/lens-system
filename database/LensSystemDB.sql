@@ -34,8 +34,8 @@ CREATE TABLE DeviceModels (
     image_url VARCHAR(500),
     model NVARCHAR(100) NOT NULL,
     description NVARCHAR(500),
-    rental_price DECIMAL(12,2) NOT NULL,
-    deposit_amount DECIMAL(12,2) NOT NULL,
+    rental_price DECIMAL(12,0) NOT NULL,
+    deposit_amount DECIMAL(12,0) NOT NULL,
 
     created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
     updated_at DATETIME2 NOT NULL DEFAULT GETDATE(),
