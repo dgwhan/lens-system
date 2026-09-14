@@ -1,6 +1,7 @@
 package com.lens.ebeans;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,13 +9,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -89,6 +93,8 @@ public class DeviceModels implements Serializable {
     @Size(max = 500)
     @Column(name = "image_url")
     private String imageUrl;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceModelId")
+    private Collection<Devices> devicesCollection;
 
     public DeviceModels() {
     }
@@ -195,6 +201,15 @@ public class DeviceModels implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @XmlTransient
+    public Collection<Devices> getDevicesCollection() {
+        return devicesCollection;
+    }
+
+    public void setDevicesCollection(Collection<Devices> devicesCollection) {
+        this.devicesCollection = devicesCollection;
     }
 
     @Override

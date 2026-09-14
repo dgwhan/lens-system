@@ -1,6 +1,7 @@
 @import url('https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css');
 @import url('buttons.css');
 @import url('table.css');
+@import url('selector.css');
 
 /* Global */
 :root {

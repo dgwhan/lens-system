@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Device ##{devicesMB.devices.id} (#{devicesMB.devices.serialNumber}) - Device Details</title>
+    <h:outputStylesheet library="css" name="font.css" />
+    <h:outputStylesheet library="css" name="app.css" />
+    <h:outputStylesheet library="css" name="buttons.css" />
+    <h:outputStylesheet library="css" name="badges.css" />
+    <h:outputStylesheet library="css" name="detail.css" />
+</h:head>
+<h:body>
+    <div class="main-wrapper">
+        <div class="detail-page-container">
+            <h:form id="detailForm">
+                <!-- Tiêu đề trang chi tiết -->
+                <div class="detail-header">
+                    <div class="detail-header-row">
+                        <div>
+                            <div class="detail-eyebrow">DEVICES</div>
+                            <h1 class="detail-title">Device Details</h1>
+                        </div>
+                        <div class="detail-actions">
+                            <h:commandButton value="Back" action="list" immediate="true"
+                                             styleClass="btn btn-outline-secondary" />
+                            <h:commandButton value="Edit Device"
+                                             action="#{devicesMB.editDevice(devicesMB.devices.id)}"
+                                             styleClass="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bố cục 2 cột tiêu chuẩn -->
+                <div class="detail-layout">
+                    <!-- Cột chính (bên trái) -->
+                    <div class="detail-main">
+                        <!-- Thẻ thông tin định danh thiết bị -->
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h2 class="detail-card-title">Device Information</h2>
+                            </div>
+                            <div class="detail-card-body">
+                                <div class="detail-identity-row">
+                                    <img src="#{devicesMB.modelImageUrl}"
+                                         alt="#{devicesMB.devices.deviceModelId.name}"
+                                         class="detail-image"
+                                         onerror="this.onerror=null;this.src='#{devicesMB.defaultImageUrl}';" />
+
+                                    <div class="detail-identity-content">
+                                        <div class="detail-identity-field">
+                                            <div class="detail-label">Serial Number</div>
+                                            <h3 class="detail-identity-title">
+                                                <h:outputText value="#{devicesMB.devices.serialNumber}" />
+                                            </h3>
+                                        </div>
+                                        <div class="detail-identity-meta-grid">
+                                            <div class="detail-item">
+                                                <div class="detail-label">Device ID</div>
+                                                <div class="detail-value detail-value-strong">
+                                                    <h:outputText value="Device ##{devicesMB.devices.id}" />
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <div class="detail-label">Model</div>
+                                                <div class="detail-value detail-value-strong">
+                                                    <h:outputText value="#{devicesMB.devices.deviceModelId.brand} - #{devicesMB.devices.deviceModelId.name}" />
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <div class="detail-label">Status</div>
+                                                <div>
+                                                    <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-active' : 'badge-customer'}">
+                                                        <h:outputText value="#{devicesMB.devices.status}" />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thẻ thông số chi tiết của Model -->
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h2 class="detail-card-title">Model Specifications</h2>
+                            </div>
+                            <div class="detail-card-body">
+                                <div class="detail-grid-specs">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Model Name</div>
+                                        <div class="detail-value detail-value-strong">
+                                            <h:outputText value="#{devicesMB.devices.deviceModelId.name}" />
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Brand</div>
+                                        <div class="detail-value detail-value-strong">
+                                            <h:outputText value="#{devicesMB.devices.deviceModelId.brand}" />
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Model Code</div>
+                                        <div class="detail-value">
+                                            <h:outputText value="#{devicesMB.devices.deviceModelId.model}" />
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Type</div>
+                                        <div class="detail-value">
+                                            <h:outputText value="#{devicesMB.devices.deviceModelId.type}" />
+                                        </div>
+                                    </div>
+                                    <div class="detail-item detail-item-full">
+                                        <div class="detail-label">Description</div>
+                                        <div class="detail-value #{empty devicesMB.devices.deviceModelId.description ? 'detail-empty' : ''}">
+                                            <h:outputText value="#{not empty devicesMB.devices.deviceModelId.description ? devicesMB.devices.deviceModelId.description : 'No description provided.'}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cột phụ (bên phải) -->
+                    <div class="detail-sidebar">
+                        <!-- Thẻ trạng thái -->
+                        <div class="detail-card">
+                            <div class="detail-card-header detail-status-card-header">
+                                <h2 class="detail-card-title">Status</h2>
+                                <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-active' : 'badge-customer'}">
+                                    <h:outputText value="#{devicesMB.devices.status}" />
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Thẻ bảng giá Model -->
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h2 class="detail-card-title">Pricing</h2>
+                            </div>
+                            <div class="detail-card-body">
+                                <div class="detail-price-list">
+                                    <div class="detail-price-item">
+                                        <div class="detail-label">Rental Price</div>
+                                        <div class="detail-price-row">
+                                            <span class="detail-price-value">
+                                                <h:outputText value="#{devicesMB.devices.deviceModelId.rentalPrice}">
+                                                    <f:convertNumber pattern="#,##0 VND" />
+                                                </h:outputText>
+                                            </span>
+                                            <span class="detail-price-unit">/(per day)</span>
+                                        </div>
+                                    </div>
+                                    <div class="detail-price-item">
+                                        <div class="detail-label">Deposit</div>
+                                        <div class="detail-price-row">
+                                            <span class="detail-price-value">
+                                                <h:outputText value="#{devicesMB.devices.deviceModelId.depositAmount}">
+                                                    <f:convertNumber pattern="#,##0 VND" />
+                                                </h:outputText>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thẻ thông tin hệ thống -->
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h2 class="detail-card-title">System Information</h2>
+                            </div>
+                            <div class="detail-card-body">
+                                <div class="detail-meta-list">
+                                    <div class="detail-meta-row">
+                                        <span class="detail-meta-label">Created At</span>
+                                        <span class="detail-meta-value">
+                                            <h:outputText value="#{devicesMB.devices.createdAt}">
+                                                <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
+                                            </h:outputText>
+                                        </span>
+                                    </div>
+                                    <div class="detail-meta-row">
+                                        <span class="detail-meta-label">Updated At</span>
+                                        <span class="detail-meta-value">
+                                            <h:outputText value="#{devicesMB.devices.updatedAt}">
+                                                <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
+                                            </h:outputText>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>

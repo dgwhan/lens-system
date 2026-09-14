@@ -4,7 +4,6 @@ import com.lens.ebeans.DeviceModels;
 import com.lens.sbeans.DeviceModelsFacadeLocal;
 import com.lens.util.ImageUtil;
 import com.lens.util.FacesUtil;
-import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
@@ -21,7 +20,7 @@ import java.util.List;
 @SessionScoped
 public class DeviceModelsMB implements Serializable {
 
-    @EJB
+    @jakarta.ejb.EJB
     private DeviceModelsFacadeLocal deviceModelsFacade;
 
     private DeviceModels deviceModels = new DeviceModels();

@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Selector chọn Device Model (Combobox tìm kiếm trên một thanh duy nhất)
+   ========================================================================== */
+
+.model-selector {
+    position: relative;
+    width: 100%;
+}
+
+/* Đảm bảo khung card và form không cắt cụt dropdown khi mở */
+.form-container,
+.card,
+.card-body {
+    overflow: visible;
+}
+
+/* Ẩn thẻ select gốc của JSF, vẫn giữ trong DOM để submit form và validate */
+.model-selector-native {
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 38px !important;
+    z-index: -1 !important;
+}
+
+/* Thanh Combobox duy nhất */
+.model-combobox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.model-combobox-input {
+    width: 100%;
+    min-height: 38px;
+    padding: 0.5rem 2.25rem 0.5rem 0.875rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.model-combobox-input::placeholder {
+    color: #94a3b8;
+}
+
+/* Tối giản viền xanh khi focus / mở (không dùng glow box-shadow, không animation) */
+.model-combobox-input:focus,
+.model-selector.is-open .model-combobox-input {
+    border-color: #514fff;
+}
+
+/* Nút mũi tên bên phải thanh combobox (Pure CSS, không dùng SVG) */
+.model-combobox-chevron {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.model-combobox-chevron::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid #64748b;
+    border-bottom: 2px solid #64748b;
+    transform: rotate(45deg);
+    margin-top: -2px;
+}
+
+.model-selector.is-open .model-combobox-chevron::after {
+    transform: rotate(-135deg);
+    border-color: #514fff;
+    margin-top: 2px;
+}
+
+/* Menu dropdown - hiển thị danh sách bên dưới (không dùng animation) */
+.model-selector-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: none;
+    overflow: hidden;
+}
+
+.model-selector.is-open .model-selector-dropdown {
+    display: block;
+}
+
+/* Danh sách kết quả (hiển thị toàn bộ danh sách, có thanh cuộn) */
+.model-selector-results {
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 0.25rem;
+}
+
+.model-selector-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+.model-selector-results::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.model-selector-results::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.model-selector-results::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Từng mục lựa chọn trong danh sách */
+.model-selector-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+    color: #334155;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.model-selector-item:hover,
+.model-selector-item:focus {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    outline: none;
+}
+
+/* Mục đang được chọn (không dùng dấu tích ✓) */
+.model-selector-item.selected {
+    background-color: #eef2ff;
+    color: #514fff;
+    font-weight: 600;
+}
+
+.model-selector-name {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Trạng thái không tìm thấy kết quả phù hợp */
+.model-selector-empty {
+    padding: 1.25rem 0.75rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #94a3b8;
+}
