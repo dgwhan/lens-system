@@ -1,22 +1,32 @@
 /* ==========================================================================
-   Badges, Tags & Status Indicators
+   Badges, Tags & Status Indicators — Minimalist, Uniform & Smooth
    ========================================================================== */
 
-/* Shared Badges */
+/* Base Badge: Tối giản, cùng cỡ (24px), bo góc mượt (pill) */
 .badge-role,
 .badge-status,
-.detail-badge {
+.model-type-badge,
+.detail-badge,
+.badge-custom {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.625rem;
-    border-radius: 6px;
+    justify-content: center;
+    height: 24px;
+    padding: 0 0.625rem;
     font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    background-color: #f1f5f9;
-    color: #475569;
+    font-weight: 500;
+    line-height: 1;
+    border-radius: 9999px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    letter-spacing: 0.01em;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
 }
 
+/* Biến thể bo góc mềm nếu cần */
 .badge-pill,
 .detail-badge-pill {
     border-radius: 9999px;
@@ -24,50 +34,54 @@
 
 /* User Roles */
 .badge-admin {
-    background-color: #fee2e2;
-    color: #b91c1c;
+    background-color: #eef2ff;
+    color: #4f46e5;
+    border-color: #e0e7ff;
 }
 
 .badge-customer {
-    background-color: #dbeafe;
-    color: #1d4ed8;
-}
-
-/* User Statuses */
-.badge-active {
-    background-color: #dcfce7;
-    color: #15803d;
-}
-
-.badge-inactive {
     background-color: #f1f5f9;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+
+/* Statuses: Active / Available */
+.badge-active,
+.badge-available {
+    background-color: #ecfdf5;
+    color: #047857;
+    border-color: #d1fae5;
+}
+
+/* Statuses: Inactive */
+.badge-inactive {
+    background-color: #f8fafc;
     color: #64748b;
+    border-color: #e2e8f0;
+}
+
+/* Statuses: Renting */
+.badge-renting {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-color: #dbeafe;
 }
 
 /* Device Model Types */
-.model-type-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.625rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    background-color: #f1f5f9;
-    color: #475569;
-}
-
 .model-type-camera {
-    background-color: #e0e7ff;
-    color: #3730a3;
+    background-color: #f5f3ff;
+    color: #6d28d9;
+    border-color: #ede9fe;
 }
 
 .model-type-lens {
     background-color: #ecfdf5;
-    color: #065f46;
+    color: #047857;
+    border-color: #d1fae5;
 }
 
 .model-type-accessory {
-    background-color: #fef3c7;
-    color: #92400e;
+    background-color: #fffbeb;
+    color: #b45309;
+    border-color: #fef3c7;
 }

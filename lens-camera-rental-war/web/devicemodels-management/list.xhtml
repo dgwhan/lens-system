@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:pt="jakarta.faces.passthrough">
-    <h:head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Device Models Management - Lens Camera Rental</title>
-        <h:outputStylesheet library="css" name="font.css" />
-        <h:outputStylesheet library="css" name="app.css" />
-        <h:outputStylesheet library="css" name="buttons.css" />
-        <h:outputStylesheet library="css" name="table.css" />
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:pt="jakarta.faces.passthrough"
+                template="/templates/layout.xhtml">
+
+    <ui:param name="activeMenu" value="models" />
+
+    <ui:define name="title">
+        Device Models Management - Lens Camera Rental
+    </ui:define>
+
+    <ui:define name="head">
         <h:outputStylesheet library="css" name="device-model.css" />
-    </h:head>
-    <h:body>
+    </ui:define>
+
+    <ui:define name="content">
         <!-- Flash Alert Message (Create / Update notification) -->
         <h:panelGroup rendered="#{not empty flash.actionAlert}">
             <script type="text/javascript">
@@ -89,7 +92,7 @@
                             <!-- Name -->
                             <h:column>
                                 <f:facet name="header">Name</f:facet>
-                                <h:outputText value="#{dm.name}" style="font-weight: 600;" />
+                                <h:outputText value="#{dm.name}" styleClass="fw-semibold" />
                             </h:column>
 
                             <!-- Brand -->
@@ -98,39 +101,27 @@
                                 <h:outputText value="#{dm.brand}" />
                             </h:column>
 
-                            <!-- Model -->
-                            <h:column>
-                                <f:facet name="header">Model</f:facet>
-                                <h:outputText value="#{dm.model}" />
-                            </h:column>
-
                             <!-- Type -->
                             <h:column>
                                 <f:facet name="header">Type</f:facet>
-                                <h:outputText value="#{dm.type}" />
+                                <span class="model-type-badge model-type-#{dm.type.toLowerCase()}">
+                                    <h:outputText value="#{dm.type == 'CAMERA' ? 'Camera' : (dm.type == 'LENS' ? 'Lens' : 'Accessory')}" />
+                                </span>
                             </h:column>
 
                             <!-- Rental Price -->
                             <h:column>
                                 <f:facet name="header">Rental Price</f:facet>
-                                <h:outputText value="#{dm.rentalPrice}" style="font-weight: 600;">
+                                <h:outputText value="#{dm.rentalPrice}">
                                     <f:convertNumber pattern="#,##0 VND" />
                                 </h:outputText>
                             </h:column>
 
-                            <!-- Deposit Amount -->
+                            <!-- Deposit -->
                             <h:column>
                                 <f:facet name="header">Deposit</f:facet>
-                                <h:outputText value="#{dm.depositAmount}" style="font-weight: 600;">
+                                <h:outputText value="#{dm.depositAmount}">
                                     <f:convertNumber pattern="#,##0 VND" />
-                                </h:outputText>
-                            </h:column>
-
-                            <!-- Created At -->
-                            <h:column>
-                                <f:facet name="header">Created At</f:facet>
-                                <h:outputText value="#{dm.createdAt}">
-                                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
                                 </h:outputText>
                             </h:column>
 
@@ -157,5 +148,5 @@
                 </div>
             </h:form>
         </div>
-    </h:body>
-</html>
+    </ui:define>
+</ui:composition>

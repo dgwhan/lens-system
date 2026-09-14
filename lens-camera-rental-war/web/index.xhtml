@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="jakarta.faces.html">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/templates/layout.xhtml">
 
-    <h:head>
-        <title>Lens Camera Rental</title>
-    </h:head>
+    <ui:param name="activeMenu" value="overview" />
 
-    <h:body>
-        <h1>Lens Camera Rental</h1>
+    <ui:define name="title">
+        Overview - Lens Camera Rental
+    </ui:define>
 
-        <h:link value="Users Management" outcome="/users-management/list" /> <br/>
-        <h:link value="Device Model Management" outcome="/devicemodels-management/list" /> <br/>
-        <h:link value="Device Management" outcome="/devices-management/list" />
-    </h:body>
-
-</html>
+    <ui:define name="content">
+        <div class="main-wrapper">
+            <div class="page-header">
+                <div class="page-header-row">
+                    <div>
+                        <div class="page-pretitle">Overview</div>
+                        <h1 class="page-title">Overview</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

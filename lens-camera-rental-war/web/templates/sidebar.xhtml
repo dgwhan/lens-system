@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+    <ui:composition>
+        <aside class="app-sidebar">
+            <div class="sidebar-header">
+                <h:link outcome="/index" styleClass="sidebar-brand-link">
+                    <span class="sidebar-brand-title">LENS SYSTEM MANAGEMENT</span>
+                </h:link>
+            </div>
+
+            <div class="sidebar-body">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">General</div>
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-nav-item">
+                            <h:link outcome="/index"
+                                    styleClass="sidebar-nav-link #{activeMenu eq 'overview' or (activeMenu ne 'users' and activeMenu ne 'models' and activeMenu ne 'devices' and not facesContext.viewRoot.viewId.contains('users-management') and not facesContext.viewRoot.viewId.contains('devicemodels-management') and not facesContext.viewRoot.viewId.contains('devices-management')) ? 'active' : ''}">
+                                <span>Overview</span>
+                            </h:link>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Management</div>
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-nav-item">
+                            <h:link outcome="/users-management/list"
+                                    styleClass="sidebar-nav-link #{activeMenu eq 'users' or facesContext.viewRoot.viewId.contains('users-management') ? 'active' : ''}">
+                                <span>Users Management</span>
+                            </h:link>
+                        </li>
+
+                        <li class="sidebar-nav-item">
+                            <h:link outcome="/devicemodels-management/list"
+                                    styleClass="sidebar-nav-link #{activeMenu eq 'models' or facesContext.viewRoot.viewId.contains('devicemodels-management') ? 'active' : ''}">
+                                <span>Device Models</span>
+                            </h:link>
+                        </li>
+
+                        <li class="sidebar-nav-item">
+                            <h:link outcome="/devices-management/list"
+                                    styleClass="sidebar-nav-link #{activeMenu eq 'devices' or facesContext.viewRoot.viewId.contains('devices-management') ? 'active' : ''}">
+                                <span>Devices</span>
+                            </h:link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </ui:composition>
+</html>

@@ -1,49 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core">
-<h:head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Device ##{devicesMB.devices.id} (#{devicesMB.devices.serialNumber}) - Device Details</title>
-    <h:outputStylesheet library="css" name="font.css" />
-    <h:outputStylesheet library="css" name="app.css" />
-    <h:outputStylesheet library="css" name="buttons.css" />
-    <h:outputStylesheet library="css" name="badges.css" />
-    <h:outputStylesheet library="css" name="detail.css" />
-</h:head>
-<h:body>
-    <div class="main-wrapper">
-        <div class="detail-page-container">
-            <h:form id="detailForm">
-                <!-- Tiêu đề trang chi tiết -->
-                <div class="detail-header">
-                    <div class="detail-header-row">
-                        <div>
-                            <div class="detail-eyebrow">DEVICES</div>
-                            <h1 class="detail-title">Device Details</h1>
-                        </div>
-                        <div class="detail-actions">
-                            <h:commandButton value="Back" action="list" immediate="true"
-                                             styleClass="btn btn-outline-secondary" />
-                            <h:commandButton value="Edit Device"
-                                             action="#{devicesMB.editDevice(devicesMB.devices.id)}"
-                                             styleClass="btn btn-primary" />
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/templates/layout.xhtml">
+
+    <ui:param name="activeMenu" value="devices" />
+
+    <ui:define name="title">
+        Device ##{devicesMB.devices.id} (#{devicesMB.devices.serialNumber}) - Device Details
+    </ui:define>
+
+    <ui:define name="head">
+        <h:outputStylesheet library="css" name="detail.css" />
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="main-wrapper">
+            <div class="detail-page-container">
+                <h:form id="detailForm">
+                    <!-- Tiêu đề trang chi tiết -->
+                    <div class="detail-header">
+                        <div class="detail-header-row">
+                            <div>
+                                <div class="detail-eyebrow">DEVICES</div>
+                                <h1 class="detail-title">Device Details</h1>
+                            </div>
+                            <div class="detail-actions">
+                                <h:commandButton value="Back" action="list" immediate="true"
+                                                 styleClass="btn btn-outline-secondary" />
+                                <h:commandButton value="Edit Device"
+                                                 action="#{devicesMB.editDevice(devicesMB.devices.id)}"
+                                                 styleClass="btn btn-primary" />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Bố cục 2 cột tiêu chuẩn -->
-                <div class="detail-layout">
-                    <!-- Cột chính (bên trái) -->
-                    <div class="detail-main">
-                        <!-- Thẻ thông tin định danh thiết bị -->
-                        <div class="detail-card">
-                            <div class="detail-card-header">
-                                <h2 class="detail-card-title">Device Information</h2>
-                            </div>
-                            <div class="detail-card-body">
+                    <!-- Bố cục 2 cột tiêu chuẩn -->
+                    <div class="detail-layout">
+                        <!-- Cột chính (bên trái) -->
+                        <div class="detail-main">
+                            <!-- Thẻ thông tin định danh thiết bị -->
+                            <div class="detail-card">
+                                <div class="detail-card-header">
+                                    <h2 class="detail-card-title">Device Information</h2>
+                                </div>
+                                <div class="detail-card-body">
                                 <div class="detail-identity-row">
                                     <img src="#{devicesMB.modelImageUrl}"
                                          alt="#{devicesMB.devices.deviceModelId.name}"
@@ -73,8 +76,8 @@
                                             <div class="detail-item">
                                                 <div class="detail-label">Status</div>
                                                 <div>
-                                                    <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-active' : 'badge-customer'}">
-                                                        <h:outputText value="#{devicesMB.devices.status}" />
+                                                    <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-available' : 'badge-renting'}">
+                                                        <h:outputText value="#{devicesMB.devices.status == 'AVAILABLE' ? 'Available' : 'Renting'}" />
                                                     </span>
                                                 </div>
                                             </div>
@@ -132,8 +135,8 @@
                         <div class="detail-card">
                             <div class="detail-card-header detail-status-card-header">
                                 <h2 class="detail-card-title">Status</h2>
-                                <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-active' : 'badge-customer'}">
-                                    <h:outputText value="#{devicesMB.devices.status}" />
+                                <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-available' : 'badge-renting'}">
+                                    <h:outputText value="#{devicesMB.devices.status == 'AVAILABLE' ? 'Available' : 'Renting'}" />
                                 </span>
                             </div>
                         </div>
@@ -201,5 +204,5 @@
             </h:form>
         </div>
     </div>
-</h:body>
-</html>
+</ui:define>
+</ui:composition>

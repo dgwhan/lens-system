@@ -1,125 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
-    xmlns:ui="jakarta.faces.facelets" xmlns:pt="jakarta.faces.passthrough">
-<h:head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>#{devicesMB.editMode ? 'Edit Device' : 'Create Device'} - Lens Camera Rental</title>
-    <h:outputStylesheet library="css" name="font.css" />
-    <h:outputStylesheet library="css" name="app.css" />
-    <h:outputStylesheet library="css" name="buttons.css" />
-    <h:outputStylesheet library="css" name="selector.css" />
-    <h:outputScript library="js" name="selector.js" target="body" />
-</h:head>
-<h:body>
-    <!-- Thông báo lỗi khi thao tác thất bại -->
-    <h:panelGroup
-        rendered="#{not empty facesContext.messageList and (facesContext.messageList[0].summary eq 'Failed to create device.' or facesContext.messageList[0].summary eq 'Failed to update device.')}">
-        <script type="text/javascript">
-            alert('#{facesContext.messageList[0].summary}');
-        </script>
-    </h:panelGroup>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:pt="jakarta.faces.passthrough"
+                template="/templates/layout.xhtml">
 
-    <div class="main-wrapper">
-        <div class="form-container">
-            <h:form id="deviceForm">
-                <!-- Tiêu đề trang -->
-                <div class="page-header">
-                    <div class="page-header-row">
-                        <div>
-                            <div class="page-pretitle">Devices Management</div>
-                            <h1 class="page-title">#{devicesMB.editMode ? 'Edit Device' : 'Create New Device'}</h1>
-                        </div>
-                        <div>
-                            <h:commandButton value="Back to Devices" action="list" immediate="true"
-                                styleClass="btn btn-outline-secondary" />
-                        </div>
-                    </div>
-                </div>
+    <ui:param name="activeMenu" value="devices" />
 
-                <!-- Thẻ Form thông tin thiết bị -->
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h2 class="card-title">#{devicesMB.editMode ? 'Edit Device Information' : 'Device Information'}</h2>
+    <ui:define name="title">
+        #{devicesMB.editMode ? 'Edit Device' : 'Create Device'} - Lens Camera Rental
+    </ui:define>
+
+    <ui:define name="scripts">
+        <h:outputScript library="js" name="selector.js" target="body" />
+    </ui:define>
+
+    <ui:define name="content">
+        <!-- Thông báo lỗi khi thao tác thất bại -->
+        <h:panelGroup
+            rendered="#{not empty facesContext.messageList and (facesContext.messageList[0].summary eq 'Failed to create device.' or facesContext.messageList[0].summary eq 'Failed to update device.')}">
+            <script type="text/javascript">
+                alert('#{facesContext.messageList[0].summary}');
+            </script>
+        </h:panelGroup>
+
+        <div class="main-wrapper">
+            <div class="form-container">
+                <h:form id="deviceForm">
+                    <!-- Tiêu đề trang -->
+                    <div class="page-header">
+                        <div class="page-header-row">
+                            <div>
+                                <div class="page-pretitle">Devices Management</div>
+                                <h1 class="page-title">#{devicesMB.editMode ? 'Edit Device' : 'Create New Device'}</h1>
+                            </div>
+                            <div>
+                                <h:commandButton value="Back to Devices" action="list" immediate="true"
+                                    styleClass="btn btn-outline-secondary" />
+                            </div>
                         </div>
                     </div>
 
-                    <div class="card-body">
-                        <div class="form-grid">
-                            <!-- Model thiết bị -->
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <h:outputLabel for="deviceModel" styleClass="form-label">
-                                    Device Model <span class="form-required">*</span>
-                                </h:outputLabel>
+                    <!-- Thẻ Form thông tin thiết bị -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">#{devicesMB.editMode ? 'Edit Device Information' : 'Device Information'}</h2>
+                            </div>
+                        </div>
 
-                                <div class="model-selector" data-selector="device-model">
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <!-- Model thiết bị -->
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <h:outputLabel for="deviceModel" styleClass="form-label">
+                                        Device Model <span class="form-required">*</span>
+                                    </h:outputLabel>
 
-                                    <h:selectOneMenu id="deviceModel" value="#{devicesMB.selectedDeviceModelId}"
-                                        required="true" requiredMessage="Please select a device model."
-                                        styleClass="model-selector-native">
+                                    <div class="model-selector" data-selector="device-model">
 
-                                        <f:selectItem itemLabel="Select Device Model" itemValue=""
-                                            noSelectionOption="true" />
+                                        <h:selectOneMenu id="deviceModel" value="#{devicesMB.selectedDeviceModelId}"
+                                            required="true" requiredMessage="Please select a device model."
+                                            styleClass="model-selector-native">
 
-                                        <f:selectItems value="#{devicesMB.allDeviceModels}" var="dm"
-                                            itemValue="#{dm.id}" itemLabel="#{dm.name} (#{dm.model})"
-                                            itemDescription="#{dm.brand}" />
-                                    </h:selectOneMenu>
+                                            <f:selectItem itemLabel="Select Device Model" itemValue=""
+                                                noSelectionOption="true" />
 
-                                    <!-- Dữ liệu brand ẩn để JavaScript tìm kiếm nhanh -->
-                                    <ui:repeat value="#{devicesMB.allDeviceModels}" var="dm">
-                                        <span class="model-meta-data" data-id="#{dm.id}" data-brand="#{dm.brand}"
-                                            style="display:none;"></span>
-                                    </ui:repeat>
+                                            <f:selectItems value="#{devicesMB.allDeviceModels}" var="dm"
+                                                itemValue="#{dm.id}" itemLabel="#{dm.name} (#{dm.model})"
+                                                itemDescription="#{dm.brand}" />
+                                        </h:selectOneMenu>
 
-                                    <!-- Nhập tìm kiếm trực tiếp + Nút mũi tên mở danh sách -->
-                                    <div class="model-combobox">
-                                        <input type="text" class="model-combobox-input"
-                                            placeholder="Select or search device model" autocomplete="off" />
-                                        <button type="button" class="model-combobox-chevron" tabindex="-1"
-                                            aria-label="Toggle dropdown"></button>
-                                    </div>
+                                        <!-- Dữ liệu brand ẩn để JavaScript tìm kiếm nhanh -->
+                                        <ui:repeat value="#{devicesMB.allDeviceModels}" var="dm">
+                                            <span class="model-meta-data" data-id="#{dm.id}" data-brand="#{dm.brand}"
+                                                style="display:none;"></span>
+                                        </ui:repeat>
 
-                                    <!-- Menu dropdown: Hiển thị toàn bộ danh sách, lọc tức thì khi gõ -->
-                                    <div class="model-selector-dropdown">
-                                        <div class="model-selector-results" role="listbox">
+                                        <!-- Nhập tìm kiếm trực tiếp + Nút mũi tên mở danh sách -->
+                                        <div class="model-combobox">
+                                            <input type="text" class="model-combobox-input"
+                                                placeholder="Select or search device model" autocomplete="off" />
+                                            <button type="button" class="model-combobox-chevron" tabindex="-1"
+                                                aria-label="Toggle dropdown"></button>
+                                        </div>
+
+                                        <!-- Menu dropdown: Hiển thị toàn bộ danh sách, lọc tức thì khi gõ -->
+                                        <div class="model-selector-dropdown">
+                                            <div class="model-selector-results" role="listbox">
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <h:message for="deviceModel" styleClass="field-error" />
                                 </div>
 
-                                <h:message for="deviceModel" styleClass="field-error" />
+                                <!-- Mã số Serial thiết bị -->
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <h:outputLabel for="serialNumber" styleClass="form-label">
+                                        Serial Number <span class="form-required">*</span>
+                                    </h:outputLabel>
+                                    <h:inputText id="serialNumber" value="#{devicesMB.devices.serialNumber}" required="true"
+                                        requiredMessage="Serial number is required." pt:placeholder="e.g. SN-SONY-00123"
+                                        styleClass="form-control" />
+                                    <h:message for="serialNumber" styleClass="field-error" />
+                                </div>
                             </div>
+                        </div>
 
-                            <!-- Mã số Serial thiết bị -->
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <h:outputLabel for="serialNumber" styleClass="form-label">
-                                    Serial Number <span class="form-required">*</span>
-                                </h:outputLabel>
-                                <h:inputText id="serialNumber" value="#{devicesMB.devices.serialNumber}" required="true"
-                                    requiredMessage="Serial number is required." pt:placeholder="e.g. SN-SONY-00123"
-                                    styleClass="form-control" />
-                                <h:message for="serialNumber" styleClass="field-error" />
+                        <!-- Nút thao tác dưới chân thẻ -->
+                        <div class="card-footer">
+                            <h:commandButton value="Cancel" action="list" immediate="true"
+                                styleClass="btn btn-outline-secondary" />
+
+                            <div>
+                                <h:commandButton value="Save Changes" action="#{devicesMB.updateDevice()}"
+                                    rendered="#{devicesMB.editMode}" styleClass="btn btn-primary" />
+                                <h:commandButton value="Create Device" action="#{devicesMB.insertDevice()}"
+                                    rendered="#{not devicesMB.editMode}" styleClass="btn btn-primary" />
                             </div>
                         </div>
                     </div>
-
-                    <!-- Nút thao tác dưới chân thẻ -->
-                    <div class="card-footer">
-                        <h:commandButton value="Cancel" action="list" immediate="true"
-                            styleClass="btn btn-outline-secondary" />
-
-                        <div>
-                            <h:commandButton value="Save Changes" action="#{devicesMB.updateDevice()}"
-                                rendered="#{devicesMB.editMode}" styleClass="btn btn-primary" />
-                            <h:commandButton value="Create Device" action="#{devicesMB.insertDevice()}"
-                                rendered="#{not devicesMB.editMode}" styleClass="btn btn-primary" />
-                        </div>
-                    </div>
-                </div>
-            </h:form>
+                </h:form>
+            </div>
         </div>
-    </div>
-</h:body>
-</html>
+    </ui:define>
+</ui:composition>

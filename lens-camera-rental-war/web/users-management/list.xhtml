@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:ui="jakarta.faces.facelets"
-      xmlns:pt="jakarta.faces.passthrough">
-    <h:head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Users Management - Lens Camera Rental</title>
-        <h:outputStylesheet library="css" name="font.css" />
-        <h:outputStylesheet library="css" name="app.css" />
-        <h:outputStylesheet library="css" name="buttons.css" />
-        <h:outputStylesheet library="css" name="table.css" />
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:pt="jakarta.faces.passthrough"
+                template="/templates/layout.xhtml">
+
+    <ui:param name="activeMenu" value="users" />
+
+    <ui:define name="title">
+        Users Management - Lens Camera Rental
+    </ui:define>
+
+    <ui:define name="head">
         <h:outputStylesheet library="css" name="users.css" />
-    </h:head>
-    <h:body>
+    </ui:define>
+
+    <ui:define name="content">
         <!-- JavaScript Alert Popup for Actions (Create, Update) -->
         <h:panelGroup rendered="#{not empty flash.actionAlert}">
             <script type="text/javascript">
@@ -83,13 +85,13 @@
                             <!-- Username -->
                             <h:column>
                                 <f:facet name="header">Username</f:facet>
-                                <h:outputText value="#{user.username}" style="font-weight: 600;" />
+                                <code class="font-code">#{user.username}</code>
                             </h:column>
 
                             <!-- Full Name -->
                             <h:column>
                                 <f:facet name="header">Full Name</f:facet>
-                                <h:outputText value="#{user.fullName}" />
+                                <h:outputText value="#{user.fullName}" styleClass="fw-semibold" />
                             </h:column>
 
                             <!-- Email -->
@@ -108,7 +110,7 @@
                             <h:column>
                                 <f:facet name="header">Role</f:facet>
                                 <span class="badge-role #{user.role == 'ADMIN' ? 'badge-admin' : 'badge-customer'}">
-                                    <h:outputText value="#{user.role}" />
+                                    <h:outputText value="#{user.role == 'ADMIN' ? 'Admin' : 'Customer'}" />
                                 </span>
                             </h:column>
 
@@ -116,16 +118,8 @@
                             <h:column>
                                 <f:facet name="header">Status</f:facet>
                                 <span class="badge-status #{user.status == 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">
-                                    <h:outputText value="#{user.status}" />
+                                    <h:outputText value="#{user.status == 'ACTIVE' ? 'Active' : 'Inactive'}" />
                                 </span>
-                            </h:column>
-
-                            <!-- Created At -->
-                            <h:column>
-                                <f:facet name="header">Created At</f:facet>
-                                <h:outputText value="#{user.createdAt}">
-                                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-                                </h:outputText>
                             </h:column>
 
                             <!-- Actions -->
@@ -145,5 +139,5 @@
                 </div>
             </h:form>
         </div>
-    </h:body>
-</html>
+    </ui:define>
+</ui:composition>

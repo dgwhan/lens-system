@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:pt="jakarta.faces.passthrough">
-    <h:head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Devices Management - Lens Camera Rental</title>
-        <h:outputStylesheet library="css" name="font.css" />
-        <h:outputStylesheet library="css" name="app.css" />
-        <h:outputStylesheet library="css" name="buttons.css" />
-        <h:outputStylesheet library="css" name="table.css" />
-        <h:outputStylesheet library="css" name="badges.css" />
-    </h:head>
-    <h:body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:pt="jakarta.faces.passthrough"
+                template="/templates/layout.xhtml">
+
+    <ui:param name="activeMenu" value="devices" />
+
+    <ui:define name="title">
+        Devices Management - Lens Camera Rental
+    </ui:define>
+
+    <ui:define name="content">
         <!-- Flash Alert Message (Thông báo thao tác thành công) -->
         <h:panelGroup rendered="#{not empty flash.actionAlert}">
             <script type="text/javascript">
@@ -51,8 +50,7 @@
                         <f:ajax execute="@form" render="devicesTableWrapper" />
                     </h:commandButton>
 
-                    <!-- Lọc theo trạng thái -->
-                    <h:selectOneMenu id="statusFilter" value="#{devicesMB.status}" styleClass="form-select" style="width: 140px;">
+                    <h:selectOneMenu id="statusFilter" value="#{devicesMB.status}" styleClass="form-select filter-select-sm">
                         <f:selectItem itemLabel="All Statuses" itemValue="" />
                         <f:selectItem itemLabel="Available" itemValue="AVAILABLE" />
                         <f:selectItem itemLabel="Renting" itemValue="RENTING" />
@@ -64,7 +62,6 @@
                     </h:commandButton>
                 </h:panelGroup>
 
-                <!-- Thẻ bảng danh sách thiết bị -->
                 <div class="card">
                     <h:panelGroup id="devicesTableWrapper" layout="block" styleClass="table-wrapper">
                         <h:dataTable id="devicesTable"
@@ -81,32 +78,21 @@
                             <!-- Serial Number -->
                             <h:column>
                                 <f:facet name="header">Serial Number</f:facet>
-                                <code style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">#{device.serialNumber}</code>
+                                <code class="font-code">#{device.serialNumber}</code>
                             </h:column>
 
                             <!-- Device Model -->
                             <h:column>
                                 <f:facet name="header">Device Model</f:facet>
-                                <h:outputText value="#{device.deviceModelId.brand} - #{device.deviceModelId.name}" style="font-weight: 600;" />
-                                <h:panelGroup rendered="#{not empty device.deviceModelId.model}">
-                                    <div style="font-size: 0.75rem; color: #64748b;">(#{device.deviceModelId.model})</div>
-                                </h:panelGroup>
+                                <h:outputText value="#{device.deviceModelId.brand} - #{device.deviceModelId.name}" styleClass="fw-semibold" />
                             </h:column>
 
                             <!-- Status -->
                             <h:column>
                                 <f:facet name="header">Status</f:facet>
-                                <span class="badge-status #{device.status == 'AVAILABLE' ? 'badge-active' : 'badge-customer'}">
-                                    <h:outputText value="#{device.status}" />
+                                <span class="badge-status #{device.status == 'AVAILABLE' ? 'badge-available' : 'badge-renting'}">
+                                    <h:outputText value="#{device.status == 'AVAILABLE' ? 'Available' : 'Renting'}" />
                                 </span>
-                            </h:column>
-
-                            <!-- Created At -->
-                            <h:column>
-                                <f:facet name="header">Created At</f:facet>
-                                <h:outputText value="#{device.createdAt}">
-                                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-                                </h:outputText>
                             </h:column>
 
                             <!-- Thao tác (Action) -->
@@ -129,13 +115,11 @@
                                     </h:commandButton>
                                 </div>
                             </h:column>
-                            
-                            
 
                         </h:dataTable>
                     </h:panelGroup>
                 </div>
             </h:form>
         </div>
-    </h:body>
-</html>
+    </ui:define>
+</ui:composition>
