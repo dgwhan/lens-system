@@ -11,6 +11,8 @@ import com.lens.auth.dto.RegisterRequest;
 import com.lens.user.entity.Users;
 import jakarta.ejb.Stateless;
 import java.util.Date;
+import java.util.logging.Logger;
+import com.lens.common.util.ValidationUtil;
 
 /**
  *
@@ -18,6 +20,8 @@ import java.util.Date;
  */
 @Stateless
 public class AuthService implements AuthServiceLocal {
+
+    private static final Logger LOGGER = Logger.getLogger(AuthService.class.getName());
 
     @jakarta.ejb.EJB
     private UsersFacadeLocal usersFacade;
@@ -50,23 +54,50 @@ public class AuthService implements AuthServiceLocal {
     @Override
     public Users register(RegisterRequest request) {
         if (request == null) {
+            LOGGER.warning("Registration failed: RegisterRequest is null.");
+            return null;
+        }
+
+        if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+            LOGGER.warning("Username is empty.");
+            return null;
+        }
+
+        //kiểm tra format password
+        if (!ValidationUtil.isValidPassword(request.getPassword())) {
+            LOGGER.warning("Invalid password format.");
+            return null;
+        }
+
+        //kiểm tra format phone
+        if (!ValidationUtil.isValidPhone(request.getPhone())) {
+            LOGGER.warning("Invalid phone number format.");
+            return null;
+        }
+
+        //kiểm tra format email nếu có giá trị
+        if (!ValidationUtil.isValidEmail(request.getEmail())) {
+            LOGGER.warning("Invalid email format.");
             return null;
         }
 
         //kiểm tra username đã tồn tại
-        if (usersFacade.isUsernameExists(request.getUsername())) {
+        if (usersFacade.isUsernameExists(request.getUsername().trim())) {
+            LOGGER.warning("Username already exists.");
             return null;
         }
 
         //kiểm tra email đã tồn tại nếu có giá trị
         if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
             if (usersFacade.isEmailExists(request.getEmail().trim(), null)) {
+                LOGGER.warning("Email is already in use.");
                 return null;
             }
         }
 
         //kiểm tra phone đã tồn tại
-        if (usersFacade.isPhoneExists(request.getPhone(), null)) {
+        if (usersFacade.isPhoneExists(request.getPhone().trim(), null)) {
+            LOGGER.warning("Phone number is already in use.");
             return null;
         }
 
@@ -100,9 +131,14 @@ public class AuthService implements AuthServiceLocal {
         user.setUpdatedAt(now);
 
         //lưu db thông qua facade
-        usersFacade.create(user);
-        
-        return user;
+        try {
+            usersFacade.create(user);
+            LOGGER.info("User registered successfully: " + user.getUsername());
+            return user;
+        } catch (Exception e) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Registration failed: Could not persist user '" + user.getUsername() + "' to database.", e);
+            return null;
+        }
     }
 
 }

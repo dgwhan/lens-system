@@ -21,7 +21,12 @@ Thư mục này dùng để chứa các thư viện `.jar` cần thiết của d
    * `jakarta.servlet-api.jar`
    * `jakarta.validation-api.jar`
 
-4. **Database Driver (nếu có kết nối trực tiếp):**
+4. **Security & Authentication (Jakarta Security API):**
+   * `jakarta.security.enterprise-api.jar` (chứa `SecurityContext`, `IdentityStore`, `CallerPrincipal`,...)
+   * `jakarta.authentication-api.jar`
+   * `jakarta.authorization-api.jar`
+
+5. **Database Driver (nếu có kết nối trực tiếp):**
    * `mssql-jdbc.jar`
 
 ---

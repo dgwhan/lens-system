@@ -8,6 +8,7 @@
     <h:outputStylesheet library="css" name="font.css" />
     <h:outputStylesheet library="css" name="app.css" />
     <h:outputStylesheet library="css" name="buttons.css" />
+    <h:outputStylesheet library="css" name="customer.css" />
 </h:head>
 
 <h:body>
@@ -26,33 +27,29 @@
                 </div>
                 <div class="page-header-actions">
                     <!-- Guest -->
-                    <h:panelGroup rendered="#{empty sessionScope.username}">
+                    <h:panelGroup rendered="#{empty request.userPrincipal}">
                         <h:link outcome="/login" value="Sign In" styleClass="btn btn-primary" />
                         <h:link outcome="/register" value="Register" styleClass="btn btn-outline-secondary" />
                     </h:panelGroup>
 
                     <!-- Logged in users (Admin and Customer) -->
-                    <h:panelGroup rendered="#{not empty sessionScope.username}">
+                    <h:panelGroup rendered="#{not empty request.userPrincipal}">
                         <!-- Admin shortcut -->
-                        <h:panelGroup rendered="#{sessionScope.role eq 'ADMIN'}">
+                        <h:panelGroup rendered="#{request.isUserInRole('ADMIN')}">
                             <h:link outcome="/admin/dashboard" value="Go to Admin Dashboard"
-                                styleClass="btn btn-primary" style="margin-right: 0.5rem;" />
+                                styleClass="btn btn-primary btn-admin-shortcut" />
                         </h:panelGroup>
 
                         <!-- User name dropdown: click to reveal logout -->
-                        <div class="user-dropdown" style="position: relative; display: inline-block;">
-                            <button type="button" class="btn btn-outline-secondary" onclick="toggleUserDropdown(event)"
-                                style="cursor: pointer;">
-                                #{not empty sessionScope.fullName ? sessionScope.fullName : sessionScope.username}
-                                &#9662;
+                        <div class="user-dropdown">
+                            <button type="button" class="btn btn-outline-secondary user-dropdown-toggle" onclick="toggleUserDropdown(event)">
+                                #{authController.currentUserFullName}
+                                <span class="user-dropdown-caret">&#9662;</span>
                             </button>
-                            <div id="userDropdownMenu"
-                                style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 0.25rem 0; min-width: 140px; z-index: 1000;">
-                                <h:form style="margin: 0; padding: 0;">
+                            <div id="userDropdownMenu" class="user-dropdown-menu">
+                                <h:form styleClass="user-dropdown-form">
                                     <h:commandLink action="#{authController.logout}" value="Logout"
-                                        style="display: block; width: 100%; padding: 0.5rem 1rem; font-size: 0.875rem; color: #dc2626; text-decoration: none; box-sizing: border-box; background: none; border: none; text-align: left; cursor: pointer;"
-                                        onmouseover="this.style.backgroundColor='#fef2f2';"
-                                        onmouseout="this.style.backgroundColor='transparent';" />
+                                        styleClass="user-dropdown-item dropdown-item-danger" />
                                 </h:form>
                             </div>
                         </div>

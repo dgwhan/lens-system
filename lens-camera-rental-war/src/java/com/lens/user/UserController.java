@@ -3,13 +3,13 @@ package com.lens.user;
 import com.lens.user.entity.Users;
 import com.lens.user.facade.UsersFacadeLocal;
 import com.lens.common.util.FacesUtil;
+import com.lens.common.util.ValidationUtil;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -18,10 +18,6 @@ import java.util.regex.Pattern;
 @Named(value = "usersMB")
 @SessionScoped
 public class UserController implements Serializable {
-
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9]).{8,255}$");
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^0[0-9]{9}$");
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
     @jakarta.ejb.EJB
     private UsersFacadeLocal usersFacade;
@@ -75,6 +71,12 @@ public class UserController implements Serializable {
             users.setCreatedAt(now);
             users.setUpdatedAt(now);
 
+            if (users.getEmail() != null && users.getEmail().trim().isEmpty()) {
+                users.setEmail(null);
+            } else if (users.getEmail() != null) {
+                users.setEmail(users.getEmail().trim());
+            }
+
             if (users.getStatus() == null || users.getStatus().trim().isEmpty()) {
                 users.setStatus("ACTIVE");
             }
@@ -122,6 +124,13 @@ public class UserController implements Serializable {
 
         try {
             users.setUpdatedAt(new Date());
+
+            if (users.getEmail() != null && users.getEmail().trim().isEmpty()) {
+                users.setEmail(null);
+            } else if (users.getEmail() != null) {
+                users.setEmail(users.getEmail().trim());
+            }
+
             usersFacade.edit(users);
 
             FacesContext.getCurrentInstance().getExternalContext().getFlash().put("actionAlert",
@@ -213,7 +222,7 @@ public class UserController implements Serializable {
     }
 
     private boolean isValidPassword() {
-        if (users.getPassword() == null || !PASSWORD_PATTERN.matcher(users.getPassword()).matches()) {
+        if (!ValidationUtil.isValidPassword(users.getPassword())) {
             FacesUtil.addFieldError("userForm:password",
                     "Password must be at least 8 characters and contain both letters and numbers.");
             return false;
@@ -222,7 +231,7 @@ public class UserController implements Serializable {
     }
 
     private boolean isValidPhone() {
-        if (users.getPhone() == null || !PHONE_PATTERN.matcher(users.getPhone().trim()).matches()) {
+        if (!ValidationUtil.isValidPhone(users.getPhone())) {
             FacesUtil.addFieldError("userForm:phone",
                     "Invalid phone number format (must be 10 digits starting with 0).");
             return false;
@@ -231,11 +240,9 @@ public class UserController implements Serializable {
     }
 
     private boolean isValidEmail() {
-        if (users.getEmail() != null && !users.getEmail().trim().isEmpty()) {
-            if (!EMAIL_PATTERN.matcher(users.getEmail().trim()).matches()) {
-                FacesUtil.addFieldError("userForm:email", "Invalid email format.");
-                return false;
-            }
+        if (!ValidationUtil.isValidEmail(users.getEmail())) {
+            FacesUtil.addFieldError("userForm:email", "Invalid email format.");
+            return false;
         }
         return true;
     }

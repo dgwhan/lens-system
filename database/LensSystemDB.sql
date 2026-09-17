@@ -9,7 +9,7 @@ CREATE TABLE Users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     full_name NVARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE,
+    email VARCHAR(100),
     phone VARCHAR(20) NOT NULL UNIQUE,
     role VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER',
 
@@ -23,6 +23,10 @@ CREATE TABLE Users (
     CONSTRAINT CK_Users_Status
     CHECK (status IN ('ACTIVE', 'INACTIVE'))
 );
+GO
+
+-- Cho phép nhiều user không nhập email (NULL), nhưng nếu có email thì không được trùng lặp
+CREATE UNIQUE NONCLUSTERED INDEX UQ_Users_Email ON Users(email) WHERE email IS NOT NULL;
 GO
 
 -- device models
