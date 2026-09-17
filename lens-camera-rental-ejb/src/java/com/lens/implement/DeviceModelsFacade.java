@@ -1,11 +1,12 @@
-package com.lens.sbeans;
+package com.lens.implement;
 
-import java.util.List;
-
-import com.lens.ebeans.DeviceModels;
+import com.lens.facade.AbstractFacade;
+import com.lens.facade.DeviceModelsFacadeLocal;
+import com.lens.entity.DeviceModels;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.util.List;
 
 /**
  *
@@ -80,6 +81,24 @@ public class DeviceModelsFacade extends AbstractFacade<DeviceModels> implements 
         return em.createQuery(jpql, DeviceModels.class)
                 .setParameter("keyword", "%" + keyword.trim().toLowerCase() + "%")
                 .getResultList();
+    }
+
+    @Override
+    public int totalDeviceModels() {
+        Long count = em.createQuery("SELECT COUNT(dm) from DeviceModels dm", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public int totalModelBrand() {
+        Long count = em.createQuery("SELECT COUNT(DISTINCT dm.brand) FROM DeviceModels dm", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public int totalModelType() {
+        Long count = em.createQuery("SELECT COUNT(DISTINCT dm.type) FROM DeviceModels dm", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
     }
 
 }

@@ -1,9 +1,12 @@
-package com.lens.sbeans;
+package com.lens.implement;
 
-import com.lens.ebeans.Devices;
+import com.lens.facade.AbstractFacade;
+import com.lens.facade.DevicesFacadeLocal;
+import com.lens.entity.Devices;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.util.List;
 
 /**
  *
@@ -24,7 +27,7 @@ public class DevicesFacade extends AbstractFacade<Devices> implements DevicesFac
         super(Devices.class);
     }
 
-    // Kiểm tra trùng lặp serial number
+    // KiÃŸâ•—Ã¢m tra trâ”œâ•£ng lÃŸâ•‘â•–p serial number
     @Override
     public boolean isSerialNumber(String serialNumber, Integer id) {
         if (serialNumber == null || serialNumber.trim().isEmpty()) {
@@ -46,14 +49,14 @@ public class DevicesFacade extends AbstractFacade<Devices> implements DevicesFac
         return count != null && count > 0;
     }
 
-    // Lấy toàn bộ danh sách thiết bị sắp xếp theo ID giảm dần
+    // LÃŸâ•‘Ã‘y toâ”œÃ¡n bÃŸâ•—Ã– danh sâ”œÃ­ch thiÃŸâ•‘â”t bÃŸâ•—Ã¯ sÃŸâ•‘Â»p xÃŸâ•‘â”p theo ID giÃŸâ•‘Ãºm dÃŸâ•‘Âºn
     @Override
     public java.util.List<Devices> findAll() {
         return em.createQuery("SELECT d FROM Devices d ORDER BY d.id DESC", Devices.class)
                 .getResultList();
     }
 
-    // Tìm kiếm thiết bị theo từ khóa (serial, model, brand) và trạng thái
+    // Tâ”œÂ¼m kiÃŸâ•‘â”m thiÃŸâ•‘â”t bÃŸâ•—Ã¯ theo tÃŸâ•—Â½ khâ”œâ”‚a (serial, model, brand) vâ”œÃ¡ trÃŸâ•‘Ã­ng thâ”œÃ­i
     @Override
     public java.util.List<Devices> search(String keyword, String status) {
         StringBuilder jpql = new StringBuilder("SELECT d FROM Devices d WHERE 1=1 ");
@@ -83,5 +86,33 @@ public class DevicesFacade extends AbstractFacade<Devices> implements DevicesFac
         }
 
         return query.getResultList();
+    }
+
+    @Override
+    public int totalDevices() {
+        Long count = em.createQuery("SELECT COUNT(d) FROM Devices d", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public int totalDevicesAvailable() {
+        Long count = em.createQuery("SELECT COUNT(d) FROM Devices d WHERE UPPER(d.status) = 'AVAILABLE'", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public int totalDevicesRenting() {
+        Long count = em.createQuery("SELECT COUNT(d) FROM Devices d WHERE UPPER(d.status) = 'RENTING'", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public List<Devices> findByDeviceModelId(Integer modelId) {
+        if (modelId == null) {
+            return java.util.Collections.emptyList();
+        }
+        return em.createQuery("SELECT d FROM Devices d WHERE d.deviceModelId.id = :modelId ORDER BY d.id DESC", Devices.class)
+                .setParameter("modelId", modelId)
+                .getResultList();
     }
 }

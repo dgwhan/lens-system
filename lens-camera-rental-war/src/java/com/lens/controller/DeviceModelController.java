@@ -1,7 +1,9 @@
-package com.lens.mbeans;
+package com.lens.controller;
 
-import com.lens.ebeans.DeviceModels;
-import com.lens.sbeans.DeviceModelsFacadeLocal;
+import com.lens.entity.DeviceModels;
+import com.lens.entity.Devices;
+import com.lens.facade.DeviceModelsFacadeLocal;
+import com.lens.facade.DevicesFacadeLocal;
 import com.lens.util.ImageUtil;
 import com.lens.util.FacesUtil;
 import jakarta.enterprise.context.SessionScoped;
@@ -18,10 +20,13 @@ import java.util.List;
  */
 @Named(value = "deviceModelsMB")
 @SessionScoped
-public class DeviceModelsMB implements Serializable {
+public class DeviceModelController implements Serializable {
 
     @jakarta.ejb.EJB
     private DeviceModelsFacadeLocal deviceModelsFacade;
+
+    @jakarta.ejb.EJB
+    private DevicesFacadeLocal devicesFacade;
 
     private DeviceModels deviceModels = new DeviceModels();
     private boolean editMode;
@@ -29,7 +34,7 @@ public class DeviceModelsMB implements Serializable {
     private Part imagePart;
     private boolean removeCurrentImage;
 
-    public DeviceModelsMB() {
+    public DeviceModelController() {
     }
 
     //insert
@@ -83,7 +88,7 @@ public class DeviceModelsMB implements Serializable {
     public String editDeviceModel(Integer id) {
         deviceModels = deviceModelsFacade.find(id);
         if (deviceModels == null) {
-            return "list?faces-redirect=true";
+            return "/404?faces-redirect=true";
         }
 
         System.out.println("edit img: " + deviceModels.getImageUrl());
@@ -107,11 +112,11 @@ public class DeviceModelsMB implements Serializable {
             return null;
         }
 
-        //lưu tên ảnh cũ
+        //l╞░u t├¬n ß║únh c┼⌐
         String oldImage = deviceModels.getImageUrl();
 
         try {
-            //upload ảnh mới nếu người dùng chọn
+            //upload ß║únh mß╗¢i nß║┐u ng╞░ß╗¥i d├╣ng chß╗ìn
             String uploadedImage = null;
             if (imagePart != null && imagePart.getSize() > 0) {
                 uploadedImage = ImageUtil.processUpload(imagePart, "device", "deviceModelForm:imageFile", "model_");
@@ -123,17 +128,17 @@ public class DeviceModelsMB implements Serializable {
                 deviceModels.setImageUrl(ImageUtil.DEFAULT_IMAGE_NAME);
             }
 
-            //giữ ảnh cũ nếu không chọn ảnh mới và không xóa
+            //giß╗» ß║únh c┼⌐ nß║┐u kh├┤ng chß╗ìn ß║únh mß╗¢i v├á kh├┤ng x├│a
             if (deviceModels.getImageUrl() == null || deviceModels.getImageUrl().isBlank()) {
                 deviceModels.setImageUrl(ImageUtil.DEFAULT_IMAGE_NAME);
             }
 
             deviceModels.setUpdatedAt(new Date());
 
-            //cập nhật database
+            //cß║¡p nhß║¡t database
             deviceModelsFacade.edit(deviceModels);
 
-            //xóa ảnh cũ sau khi cập nhật database thành công
+            //x├│a ß║únh c┼⌐ sau khi cß║¡p nhß║¡t database th├ánh c├┤ng
             if ((uploadedImage != null || removeCurrentImage) && oldImage != null && !oldImage.equals(ImageUtil.DEFAULT_IMAGE_NAME)) {
                 ImageUtil.deleteImage(oldImage, "device");
             }
@@ -155,7 +160,7 @@ public class DeviceModelsMB implements Serializable {
     //detail
     public String detailDeviceModel(Integer id) {
         deviceModels = deviceModelsFacade.find(id);
-        return deviceModels != null ? "detail" : "list?faces-redirect=true";
+        return deviceModels != null ? "detail" : "/404?faces-redirect=true";
     }
 
     //delete
@@ -270,6 +275,25 @@ public class DeviceModelsMB implements Serializable {
 
     public boolean getHasCustomImage() {
         return isHasCustomImage();
+    }
+
+    public int getTotalDeviceModels() {
+        return deviceModelsFacade.totalDeviceModels();
+    }
+
+    public int getTotalModelBrand() {
+        return deviceModelsFacade.totalModelBrand();
+    }
+
+    public int getTotalModelType() {
+        return deviceModelsFacade.totalModelType();
+    }
+
+    public List<Devices> getModelDevices() {
+        if (deviceModels == null || deviceModels.getId() == null) {
+            return java.util.Collections.emptyList();
+        }
+        return devicesFacade.findByDeviceModelId(deviceModels.getId());
     }
 
 }

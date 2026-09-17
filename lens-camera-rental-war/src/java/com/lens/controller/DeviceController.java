@@ -1,9 +1,9 @@
-package com.lens.mbeans;
+package com.lens.controller;
 
-import com.lens.ebeans.DeviceModels;
-import com.lens.ebeans.Devices;
-import com.lens.sbeans.DeviceModelsFacadeLocal;
-import com.lens.sbeans.DevicesFacadeLocal;
+import com.lens.entity.Devices;
+import com.lens.entity.DeviceModels;
+import com.lens.facade.DevicesFacadeLocal;
+import com.lens.facade.DeviceModelsFacadeLocal;
 import com.lens.util.FacesUtil;
 import com.lens.util.ImageUtil;
 import jakarta.inject.Named;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Named(value = "devicesMB")
 @SessionScoped
-public class DevicesMB implements Serializable {
+public class DeviceController implements Serializable {
 
     @jakarta.ejb.EJB
     private DevicesFacadeLocal devicesFacade;
@@ -33,7 +33,7 @@ public class DevicesMB implements Serializable {
     private String keyword = "";
     private String status = "";
 
-    public DevicesMB() {
+    public DeviceController() {
         devices.setStatus("AVAILABLE");
     }
 
@@ -77,11 +77,11 @@ public class DevicesMB implements Serializable {
         }
     }
     
-    // Mở form chỉnh sửa thiết bị
+    // Mß╗ƒ form chß╗ënh sß╗¡a thiß║┐t bß╗ï
     public String editDevice(Integer id) {
         devices = devicesFacade.find(id);
         if (devices == null) {
-            return "list?faces-redirect=true";
+            return "/404?faces-redirect=true";
         }
         if (devices.getDeviceModelId() != null) {
             selectedDeviceModelId = devices.getDeviceModelId().getId();
@@ -89,10 +89,10 @@ public class DevicesMB implements Serializable {
             selectedDeviceModelId = null;
         }
         editMode = true;
-        return "form";
+        return "/devices-management/form?faces-redirect=true";
     }
 
-    // Cập nhật thông tin thiết bị
+    // Cß║¡p nhß║¡t th├┤ng tin thiß║┐t bß╗ï
     public String updateDevice() {
         boolean hasError = false;
         if (selectedDeviceModelId == null && (devices == null || devices.getDeviceModelId() == null)) {
@@ -128,16 +128,16 @@ public class DevicesMB implements Serializable {
         }
     }
 
-    // Xem chi tiết thiết bị
+    // Xem chi tiß║┐t thiß║┐t bß╗ï
     public String detailDevice(Integer id) {
         devices = devicesFacade.find(id);
         if (devices == null) {
-            return "list?faces-redirect=true";
+            return "/devices-management/list?faces-redirect=true";
         }
-        return "detail";
+        return "/devices-management/detail?faces-redirect=true";
     }
 
-    // Xóa thiết bị
+    // X├│a thiß║┐t bß╗ï
     public void deleteDevice(Integer id) {
         try {
             Devices d = devicesFacade.find(id);
@@ -150,7 +150,7 @@ public class DevicesMB implements Serializable {
         }
     }
 
-    // Lấy danh sách thiết bị (hỗ trợ tìm kiếm theo từ khóa và trạng thái)
+    // Lß║Ñy danh s├ích thiß║┐t bß╗ï (hß╗ù trß╗ú t├¼m kiß║┐m theo tß╗½ kh├│a v├á trß║íng th├íi)
     public List<Devices> showAllDevices() {
         return devicesFacade.findAll();
     }
@@ -159,7 +159,7 @@ public class DevicesMB implements Serializable {
         return devicesFacade.search(keyword, status);
     }
 
-    // Đặt lại bộ lọc tìm kiếm
+    // ─Éß║╖t lß║íi bß╗Ö lß╗ìc t├¼m kiß║┐m
     public void resetFilter() {
         this.keyword = "";
         this.status = "";
@@ -169,7 +169,7 @@ public class DevicesMB implements Serializable {
         return deviceModelsFacade.findAll();
     }
 
-    // Hỗ trợ hiển thị ảnh của model thiết bị
+    // Hß╗ù trß╗ú hiß╗ân thß╗ï ß║únh cß╗ºa model thiß║┐t bß╗ï
     public String getImageUrl(String imageUrl) {
         return ImageUtil.getDeviceImageUrl(imageUrl);
     }
@@ -238,6 +238,18 @@ public class DevicesMB implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getTotalDevices() {
+        return devicesFacade.totalDevices();
+    }
+
+    public int getTotalDevicesAvailable() {
+        return devicesFacade.totalDevicesAvailable();
+    }
+
+    public int getTotalDevicesRenting() {
+        return devicesFacade.totalDevicesRenting();
     }
 
 }

@@ -232,4 +232,55 @@ a, a:hover, a:focus, a:active, a:visited {
     width: 140px;
 }
 
+/* ==========================================================================
+   Top Statistics Grid & Cards (Shared across Users, Devices, Device Models)
+   ========================================================================== */
+.stats-grid,
+.users-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.stat-card,
+.user-stat-card {
+    background-color: #FFFFFF;
+    border: 1px solid #EEEFF3;
+    border-radius: 0 !important;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.stat-label,
+.user-stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #9099A0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+}
+
+.stat-value,
+.user-stat-value {
+    font-size: 1.625rem;
+    font-weight: 600;
+    color: #000000;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+@media (max-width: 640px) {
+    .stats-grid,
+    .users-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+}
+
+
 

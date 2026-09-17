@@ -139,3 +139,34 @@
     color: #09090b !important;
     text-decoration: none !important;
 }
+
+/* Phần chân Sidebar: Nút Logout */
+.sidebar-footer {
+    padding: 0.875rem;
+    border-top: 1px solid #f4f4f5;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.sidebar-logout-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.5625rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #dc2626;
+    background-color: transparent;
+    border: none;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.sidebar-logout-btn:hover {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}

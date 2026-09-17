@@ -1,7 +1,7 @@
-package com.lens.mbeans;
+package com.lens.controller;
 
-import com.lens.ebeans.Users;
-import com.lens.sbeans.UsersFacadeLocal;
+import com.lens.entity.Users;
+import com.lens.facade.UsersFacadeLocal;
 import com.lens.util.FacesUtil;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 @Named(value = "usersMB")
 @SessionScoped
-public class UsersMB implements Serializable {
+public class UserController implements Serializable {
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9]).{8,255}$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^0[0-9]{9}$");
@@ -31,10 +31,10 @@ public class UsersMB implements Serializable {
     private String keyword = "";
     private String role = "";
 
-    public UsersMB() {
+    public UserController() {
     }
 
-    //insert
+    // insert
     public String newUser() {
         users = new Users();
         users.setRole("CUSTOMER");
@@ -80,7 +80,8 @@ public class UsersMB implements Serializable {
             }
 
             usersFacade.create(users);
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("actionAlert", "User created successfully.");
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("actionAlert",
+                    "User created successfully.");
             return "list?faces-redirect=true";
 
         } catch (Exception e) {
@@ -90,9 +91,12 @@ public class UsersMB implements Serializable {
         }
     }
 
-    //open edit form
+    // open edit form
     public String editUser(Integer id) {
         users = usersFacade.find(id);
+        if (users == null) {
+            return "/404?faces-redirect=true";
+        }
         editMode = true;
         return "form";
     }
@@ -120,7 +124,8 @@ public class UsersMB implements Serializable {
             users.setUpdatedAt(new Date());
             usersFacade.edit(users);
 
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("actionAlert", "User updated successfully.");
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("actionAlert",
+                    "User updated successfully.");
             return "list?faces-redirect=true";
 
         } catch (Exception e) {
@@ -130,13 +135,16 @@ public class UsersMB implements Serializable {
         }
     }
 
-    //detail
+    // detail
     public String detailUser(Integer id) {
         users = usersFacade.find(id);
+        if (users == null) {
+            return "/404?faces-redirect=true";
+        }
         return "detail";
     }
 
-    //delete
+    // delete
     public void deleteUser(Integer id) {
         try {
             Users u = usersFacade.find(id);
@@ -148,7 +156,7 @@ public class UsersMB implements Serializable {
         }
     }
 
-    //list user
+    // list user
     public List<Users> showAllUsers() {
         return usersFacade.findAll();
     }
@@ -157,13 +165,13 @@ public class UsersMB implements Serializable {
         return usersFacade.search(keyword, role);
     }
 
-    //reset search
+    // reset search
     public void resetFilter() {
         this.keyword = "";
         this.role = "";
     }
 
-    //validate
+    // validate
     private boolean isDuplicateUsername() {
         if (usersFacade.isUsernameExists(users.getUsername())) {
             FacesUtil.addFieldError("userForm:username", "Username already exists.");
@@ -206,7 +214,8 @@ public class UsersMB implements Serializable {
 
     private boolean isValidPassword() {
         if (users.getPassword() == null || !PASSWORD_PATTERN.matcher(users.getPassword()).matches()) {
-            FacesUtil.addFieldError("userForm:password", "Password must be at least 8 characters and contain both letters and numbers.");
+            FacesUtil.addFieldError("userForm:password",
+                    "Password must be at least 8 characters and contain both letters and numbers.");
             return false;
         }
         return true;
@@ -214,7 +223,8 @@ public class UsersMB implements Serializable {
 
     private boolean isValidPhone() {
         if (users.getPhone() == null || !PHONE_PATTERN.matcher(users.getPhone().trim()).matches()) {
-            FacesUtil.addFieldError("userForm:phone", "Invalid phone number format (must be 10 digits starting with 0).");
+            FacesUtil.addFieldError("userForm:phone",
+                    "Invalid phone number format (must be 10 digits starting with 0).");
             return false;
         }
         return true;
@@ -260,5 +270,25 @@ public class UsersMB implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public int getTotalUsers() {
+        return usersFacade.totalUsers();
+    }
+
+    public int getTotalAdminRole() {
+        return usersFacade.totalAdminRole();
+    }
+
+    public int getTotalCustomerRole() {
+        return usersFacade.totalCustomerRole();
+    }
+
+    public int getTotalAdmins() {
+        return getTotalAdminRole();
+    }
+
+    public int getTotalCustomers() {
+        return getTotalCustomerRole();
     }
 }

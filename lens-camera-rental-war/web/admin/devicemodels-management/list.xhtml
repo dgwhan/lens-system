@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core"
-                xmlns:ui="jakarta.faces.facelets"
-                xmlns:pt="jakarta.faces.passthrough"
-                template="/templates/layout.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets" xmlns:pt="jakarta.faces.passthrough" template="/templates/layout.xhtml">
 
     <ui:param name="activeMenu" value="models" />
 
@@ -43,18 +39,38 @@
                             <h1 class="page-title">Device Models Management</h1>
                         </div>
                         <div>
-                            <h:commandButton value="+ Add Model"
-                                             action="#{deviceModelsMB.newDeviceModel()}"
-                                             styleClass="btn btn-primary" />
+                            <h:commandButton value="+ Add Model" action="#{deviceModelsMB.newDeviceModel()}"
+                                styleClass="btn btn-primary" />
                         </div>
                     </div>
                 </div>
 
+                <!-- Top Statistics Section  -->
+                <h:panelGroup id="statsCardsWrapper" layout="block" styleClass="stats-grid">
+                    <!-- Total Models -->
+                    <div class="stat-card">
+                        <span class="stat-label">Total Models</span>
+                        <div class="stat-value">#{deviceModelsMB.totalDeviceModels}</div>
+                    </div>
+
+                    <!-- Brands -->
+                    <div class="stat-card">
+                        <span class="stat-label">Total Brands</span>
+                        <div class="stat-value">#{deviceModelsMB.totalModelBrand}</div>
+                    </div>
+
+                    <!-- Model Types -->
+                    <div class="stat-card">
+                        <span class="stat-label">Total Model Types</span>
+                        <div class="stat-value">#{deviceModelsMB.totalModelType}</div>
+                    </div>
+                </h:panelGroup>
+
                 <!-- Search Bar -->
                 <h:panelGroup id="searchBar" layout="block" styleClass="users-search">
                     <h:inputText id="keyword" value="#{deviceModelsMB.keyword}"
-                                 pt:placeholder="Search model name, brand, model code, type..."
-                                 styleClass="form-control search-input">
+                        pt:placeholder="Search model name, brand, model code, type..."
+                        styleClass="form-control search-input">
                         <f:ajax event="keyup" delay="300" render="deviceModelsTableWrapper" />
                     </h:inputText>
 
@@ -62,17 +78,16 @@
                         <f:ajax execute="@form" render="deviceModelsTableWrapper" />
                     </h:commandButton>
 
-                    <h:commandButton value="Reset" action="#{deviceModelsMB.resetFilter()}" styleClass="btn btn-outline-secondary">
+                    <h:commandButton value="Reset" action="#{deviceModelsMB.resetFilter()}"
+                        styleClass="btn btn-outline-secondary">
                         <f:ajax render="searchBar deviceModelsTableWrapper" />
                     </h:commandButton>
                 </h:panelGroup>
 
                 <div class="card">
                     <h:panelGroup id="deviceModelsTableWrapper" layout="block" styleClass="table-wrapper">
-                        <h:dataTable id="deviceModelsTable"
-                                     value="#{deviceModelsMB.showAllDeviceModel()}"
-                                     var="dm"
-                                     styleClass="data-table">
+                        <h:dataTable id="deviceModelsTable" value="#{deviceModelsMB.showAllDeviceModel()}" var="dm"
+                            styleClass="data-table">
 
                             <!-- ID -->
                             <h:column>
@@ -83,10 +98,9 @@
                             <!-- Image -->
                             <h:column>
                                 <f:facet name="header">Image</f:facet>
-                                <img src="#{deviceModelsMB.getImageUrl(dm.imageUrl)}"
-                                     alt="#{dm.name}"
-                                     class="model-table-thumb"
-                                     onerror="this.onerror=null;this.src='#{deviceModelsMB.defaultImageUrl}';" />
+                                <img src="#{deviceModelsMB.getImageUrl(dm.imageUrl)}" alt="#{dm.name}"
+                                    class="model-table-thumb"
+                                    onerror="this.onerror=null;this.src='#{deviceModelsMB.defaultImageUrl}';" />
                             </h:column>
 
                             <!-- Name -->
@@ -105,7 +119,8 @@
                             <h:column>
                                 <f:facet name="header">Type</f:facet>
                                 <span class="model-type-badge model-type-#{dm.type.toLowerCase()}">
-                                    <h:outputText value="#{dm.type == 'CAMERA' ? 'Camera' : (dm.type == 'LENS' ? 'Lens' : 'Accessory')}" />
+                                    <h:outputText
+                                        value="#{dm.type == 'CAMERA' ? 'Camera' : (dm.type == 'LENS' ? 'Lens' : 'Accessory')}" />
                                 </span>
                             </h:column>
 
@@ -129,17 +144,15 @@
                             <h:column>
                                 <f:facet name="header">Action</f:facet>
                                 <div class="table-row-actions">
-                                    <h:commandButton value="Detail"
-                                                     action="#{deviceModelsMB.detailDeviceModel(dm.id)}"
-                                                     styleClass="btn btn-sm btn-outline-info" />
-                                    <h:commandButton value="Edit"
-                                                     action="#{deviceModelsMB.editDeviceModel(dm.id)}"
-                                                     styleClass="btn btn-sm btn-outline-primary" />
-                                    <h:commandButton value="Delete"
-                                                     action="#{deviceModelsMB.deleteDeviceModel(dm.id)}"
-                                                     styleClass="btn btn-sm btn-outline-danger"
-                                                     onclick="if (!confirm('Are you sure you want to delete this device model?')) return false;">
-                                        <f:ajax render="deviceModelsTableWrapper" onevent="onDeleteEvent" />
+                                    <h:commandButton value="Detail" action="#{deviceModelsMB.detailDeviceModel(dm.id)}"
+                                        styleClass="btn btn-sm btn-outline-info" />
+                                    <h:commandButton value="Edit" action="#{deviceModelsMB.editDeviceModel(dm.id)}"
+                                        styleClass="btn btn-sm btn-outline-primary" />
+                                    <h:commandButton value="Delete" action="#{deviceModelsMB.deleteDeviceModel(dm.id)}"
+                                        styleClass="btn btn-sm btn-outline-danger"
+                                        onclick="if (!confirm('Are you sure you want to delete this device model?')) return false;">
+                                        <f:ajax render="deviceModelsTableWrapper statsCardsWrapper"
+                                            onevent="onDeleteEvent" />
                                     </h:commandButton>
                                 </div>
                             </h:column>

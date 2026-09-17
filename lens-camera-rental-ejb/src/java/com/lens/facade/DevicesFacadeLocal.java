@@ -1,6 +1,6 @@
-package com.lens.sbeans;
+package com.lens.facade;
 
-import com.lens.ebeans.Devices;
+import com.lens.entity.Devices;
 import jakarta.ejb.Local;
 import java.util.List;
 
@@ -24,8 +24,16 @@ public interface DevicesFacadeLocal {
     List<Devices> findRange(int[] range);
 
     int count();
-    
+
     boolean isSerialNumber(String serialNumber, Integer id);
 
     List<Devices> search(String keyword, String status);
+
+    int totalDevices();
+
+    int totalDevicesAvailable();
+
+    int totalDevicesRenting();
+
+    List<Devices> findByDeviceModelId(Integer modelId);
 }

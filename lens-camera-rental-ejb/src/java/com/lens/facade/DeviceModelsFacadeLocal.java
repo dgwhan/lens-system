@@ -1,6 +1,6 @@
-package com.lens.sbeans;
+package com.lens.facade;
 
-import com.lens.ebeans.DeviceModels;
+import com.lens.entity.DeviceModels;
 import jakarta.ejb.Local;
 import java.util.List;
 
@@ -24,11 +24,17 @@ public interface DeviceModelsFacadeLocal {
     List<DeviceModels> findRange(int[] range);
 
     int count();
-    
+
     boolean isBrandModelExists(String brand, String model, Integer id);
 
     boolean isDeviceModelNameExists(String name, Integer id);
 
     List<DeviceModels> search(String keyword);
+
+    int totalDeviceModels();
+
+    int totalModelBrand();
+
+    int totalModelType();
 
 }

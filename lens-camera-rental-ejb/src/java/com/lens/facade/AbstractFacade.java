@@ -1,4 +1,4 @@
-package com.lens.sbeans;
+package com.lens.facade;
 
 import jakarta.persistence.EntityManager;
 import java.util.List;

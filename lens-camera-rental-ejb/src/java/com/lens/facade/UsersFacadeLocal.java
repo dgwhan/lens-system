@@ -1,6 +1,6 @@
-package com.lens.sbeans;
+package com.lens.facade;
 
-import com.lens.ebeans.Users;
+import com.lens.entity.Users;
 import jakarta.ejb.Local;
 import java.util.List;
 
@@ -27,10 +27,18 @@ public interface UsersFacadeLocal {
     
     List<Users> search(String keyword, String role);
 
+    Users findByUsername(String username);
+
     boolean isUsernameExists(String username);
 
     boolean isEmailExists(String email, Integer id);
 
     boolean isPhoneExists(String phone, Integer id);
+    
+    int totalUsers();
+    
+    int totalAdminRole();
+    
+    int totalCustomerRole();
 
 }

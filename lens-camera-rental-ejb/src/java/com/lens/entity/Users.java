@@ -1,4 +1,4 @@
-package com.lens.ebeans;
+package com.lens.entity;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -211,7 +211,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "com.lens.ebeans.Users[ id=" + id + " ]";
+        return "com.lens.entity.Users[ id=" + id + " ]";
     }
 
 }

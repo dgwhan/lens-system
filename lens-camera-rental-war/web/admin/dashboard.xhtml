@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/templates/layout.xhtml">
+
+    <ui:param name="activeMenu" value="overview" />
+
+    <ui:define name="title">
+        Dashboard - Lens System Management
+    </ui:define>
+
+    <ui:define name="content">
+        <!-- Flash Alert Message (E.g. Login successful) -->
+        <h:panelGroup rendered="#{not empty flash.actionAlert}">
+            <script type="text/javascript">
+                alert('#{flash.actionAlert}');
+            </script>
+        </h:panelGroup>
+
+        <div class="main-wrapper">
+            <div class="page-header">
+                <div class="page-header-row">
+                    <div>
+                        <div class="page-pretitle">System Overview</div>
+                        <h1 class="page-title">Admin Dashboard</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,5 +1,6 @@
-package com.lens.ebeans;
+package com.lens.entity;
 
+import com.lens.entity.DeviceModels;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -150,7 +151,7 @@ public class Devices implements Serializable {
 
     @Override
     public String toString() {
-        return "com.lens.ebeans.Devices[ id=" + id + " ]";
+        return "com.lens.entity.Devices[ id=" + id + " ]";
     }
 
 }

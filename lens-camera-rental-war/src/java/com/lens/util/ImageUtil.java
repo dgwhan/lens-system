@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Utility class xử lý đường dẫn và tài nguyên hình ảnh trong JSF.
+ * Utility class xß╗¡ l├╜ ─æ╞░ß╗¥ng dß║½n v├á t├ái nguy├¬n h├¼nh ß║únh trong JSF.
  */
 public class ImageUtil {
 
@@ -26,7 +26,7 @@ public class ImageUtil {
     }
     
     /**
-     * Tìm thư mục web trong source project thật (lens-camera-rental-war/web).
+     * T├¼m th╞░ mß╗Ñc web trong source project thß║¡t (lens-camera-rental-war/web).
      */
     private static File findSourceWebDirectory(String uploadDirRealPath) {
         if (uploadDirRealPath == null || uploadDirRealPath.isBlank()) {
@@ -37,13 +37,13 @@ public class ImageUtil {
             File current = new File(uploadDirRealPath);
 
             while (current != null) {
-                // 1. Trường hợp dự án EAR đa module (thư mục root chứa lens-camera-rental-war/web)
+                // 1. Tr╞░ß╗¥ng hß╗úp dß╗▒ ├ín EAR ─æa module (th╞░ mß╗Ñc root chß╗⌐a lens-camera-rental-war/web)
                 File warWeb = new File(current, "lens-camera-rental-war/web");
                 if (warWeb.exists() && warWeb.isDirectory()) {
                     return warWeb;
                 }
 
-                // 2. Trường hợp current chính là thư mục module lens-camera-rental-war
+                // 2. Tr╞░ß╗¥ng hß╗úp current ch├¡nh l├á th╞░ mß╗Ñc module lens-camera-rental-war
                 File srcDir = new File(current, "src");
                 File webDir = new File(current, "web");
 
@@ -63,12 +63,12 @@ public class ImageUtil {
     }
 
     /**
-     * Lưu ảnh vào thư mục source của project.
+     * L╞░u ß║únh v├áo th╞░ mß╗Ñc source cß╗ºa project.
      *
-     * @param targetFile file ảnh trong runtime
-     * @param fileName tên file ảnh
-     * @param uploadDirRealPath đường dẫn thư mục runtime
-     * @param subDir thư mục con
+     * @param targetFile file ß║únh trong runtime
+     * @param fileName t├¬n file ß║únh
+     * @param uploadDirRealPath ─æ╞░ß╗¥ng dß║½n th╞░ mß╗Ñc runtime
+     * @param subDir th╞░ mß╗Ñc con
      */
     private static void saveToSourceDirectory(
             File targetFile,
@@ -91,7 +91,7 @@ public class ImageUtil {
                 Files.copy(targetFile.toPath(), sourceFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 System.out.println("[ImageUtil] Saved to source: " + sourceFile.getAbsolutePath());
 
-                // Đồng thời copy vào build/web (nếu có) để đảm bảo đồng bộ
+                // ─Éß╗ông thß╗¥i copy v├áo build/web (nß║┐u c├│) ─æß╗â ─æß║úm bß║úo ─æß╗ông bß╗Ö
                 File buildWebDir = new File(webDir.getParentFile(), "build/web/resources/images/" + (subDir != null && !subDir.isBlank() ? subDir : ""));
                 if (buildWebDir.exists() && buildWebDir.isDirectory()) {
                     File buildFile = new File(buildWebDir, fileName);
@@ -106,7 +106,7 @@ public class ImageUtil {
     }
 
     /**
-     * Lấy URL của ảnh mặc định.
+     * Lß║Ñy URL cß╗ºa ß║únh mß║╖c ─æß╗ïnh.
      */
     public static String getDefaultImageUrl() {
         try {
@@ -120,11 +120,11 @@ public class ImageUtil {
     }
 
     /**
-     * Lấy URL ảnh theo tên file và tiền tố thư mục con (device)
+     * Lß║Ñy URL ß║únh theo t├¬n file v├á tiß╗ün tß╗æ th╞░ mß╗Ñc con (device)
      *
-     * @param imageUrl tên file ảnh hoặc URL đầy đủ
-     * @param prefix tiền tố thư mục con 
-     * @return đường dẫn tài nguyên hợp lệ trên JSF
+     * @param imageUrl t├¬n file ß║únh hoß║╖c URL ─æß║ºy ─æß╗º
+     * @param prefix tiß╗ün tß╗æ th╞░ mß╗Ñc con 
+     * @return ─æ╞░ß╗¥ng dß║½n t├ái nguy├¬n hß╗úp lß╗ç tr├¬n JSF
      */
     public static String getImageUrl(String imageUrl, String prefix) {
         if (imageUrl == null || imageUrl.isBlank()) {
@@ -139,17 +139,17 @@ public class ImageUtil {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             if (context != null) {
-                // chuẩn hóa tiền tố thư mục
+                // chuß║⌐n h├│a tiß╗ün tß╗æ th╞░ mß╗Ñc
                 String formattedPrefix = (prefix != null && !prefix.isBlank())
                         ? (prefix.endsWith("/") ? prefix : prefix + "/") : "";
 
-                // tạo tên resource
+                // tß║ío t├¬n resource
                 String resourceName = (path.equals(DEFAULT_IMAGE_NAME) || (!formattedPrefix.isEmpty()
                         && path.startsWith(formattedPrefix))) ? path : formattedPrefix + path;
 
-                //tạo jsf resource
+                //tß║ío jsf resource
                 var resource = context.getApplication().getResourceHandler().createResource(resourceName, DEFAULT_IMAGE_LIBRARY);
-                //kiểm tra resource có tồn tại không
+                //kiß╗âm tra resource c├│ tß╗ôn tß║íi kh├┤ng
                 if (resource != null) {
                     return resource.getRequestPath();
                 }
@@ -157,18 +157,18 @@ public class ImageUtil {
 
         } catch (Exception ignored) {
         }
-        //trả về ảnh mặc định nếu không tìm thấy resource
+        //trß║ú vß╗ü ß║únh mß║╖c ─æß╗ïnh nß║┐u kh├┤ng t├¼m thß║Ñy resource
         return getDefaultImageUrl();
     }
 
     /**
-     * Upload và lưu hình ảnh.
+     * Upload v├á l╞░u h├¼nh ß║únh.
      *
-     * @param imagePart file được upload
-     * @param subDir thư mục con để lưu ảnh
-     * @param errorClientId client id của component hiển thị lỗi
-     * @param filePrefix tiền tố của tên file
-     * @return tên file mới hoặc null nếu upload thất bại
+     * @param imagePart file ─æ╞░ß╗úc upload
+     * @param subDir th╞░ mß╗Ñc con ─æß╗â l╞░u ß║únh
+     * @param errorClientId client id cß╗ºa component hiß╗ân thß╗ï lß╗ùi
+     * @param filePrefix tiß╗ün tß╗æ cß╗ºa t├¬n file
+     * @return t├¬n file mß╗¢i hoß║╖c null nß║┐u upload thß║Ñt bß║íi
      */
     public static String processUpload(
             Part imagePart,
@@ -176,38 +176,38 @@ public class ImageUtil {
             String errorClientId,
             String filePrefix) {
 
-        //kiểm tra có file được upload hay không
+        //kiß╗âm tra c├│ file ─æ╞░ß╗úc upload hay kh├┤ng
         if (imagePart == null || imagePart.getSize() <= 0) {
             return null;
         }
 
-        //lấy tên file gốc
+        //lß║Ñy t├¬n file gß╗æc
         String submittedFileName = imagePart.getSubmittedFileName();
 
-        //lấy phần mở rộng của file
+        //lß║Ñy phß║ºn mß╗ƒ rß╗Öng cß╗ºa file
         String extension = "";
 
         if (submittedFileName != null && submittedFileName.lastIndexOf('.') >= 0) {
             extension = submittedFileName.substring(submittedFileName.lastIndexOf('.')).toLowerCase();
         }
 
-        //lấy loại file
+        //lß║Ñy loß║íi file
         String contentType = imagePart.getContentType();
 
-        //kiểm tra phần mở rộng
+        //kiß╗âm tra phß║ºn mß╗ƒ rß╗Öng
         boolean validExt = ALLOWED_EXTENSIONS.contains(extension);
 
-        //kiểm tra mime type
+        //kiß╗âm tra mime type
         boolean validType = contentType != null && ALLOWED_MIME_TYPES.contains(contentType.toLowerCase().trim());
 
-        //từ chối nếu file không hợp lệ
+        //tß╗½ chß╗æi nß║┐u file kh├┤ng hß╗úp lß╗ç
         if (!validExt || !validType) {
             FacesUtil.addFieldError(errorClientId, "Incompatible file format. Only JPG, PNG, and WEBP files are allowed.");
             FacesContext.getCurrentInstance().validationFailed();
             return null;
         }
 
-        //kiểm tra kích thước file
+        //kiß╗âm tra k├¡ch th╞░ß╗¢c file
         if (imagePart.getSize() > MAX_IMAGE_SIZE) {
             FacesUtil.addFieldError(errorClientId, "Image size must not exceed 5MB.");
             FacesContext.getCurrentInstance().validationFailed();
@@ -215,47 +215,47 @@ public class ImageUtil {
         }
 
         try {
-            //đặt tiền tố mặc định cho tên file
+            //─æß║╖t tiß╗ün tß╗æ mß║╖c ─æß╗ïnh cho t├¬n file
             String prefix = (filePrefix != null && !filePrefix.isBlank()) ? filePrefix : "img_";
 
-            //tạo tên file duy nhất
+            //tß║ío t├¬n file duy nhß║Ñt
             String uniqueFileName = prefix + UUID.randomUUID().toString().substring(0, 8) + "_" + System.currentTimeMillis() + extension;
 
-            //xác định thư mục lưu ảnh
+            //x├íc ─æß╗ïnh th╞░ mß╗Ñc l╞░u ß║únh
             String resourcePath = "/resources/images/" + (subDir != null && !subDir.isBlank() ? subDir : "");
 
-            //lấy đường dẫn thực tế trên server
+            //lß║Ñy ─æ╞░ß╗¥ng dß║½n thß╗▒c tß║┐ tr├¬n server
             String uploadDirRealPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath(resourcePath);
 
-            //kiểm tra đường dẫn lưu ảnh
+            //kiß╗âm tra ─æ╞░ß╗¥ng dß║½n l╞░u ß║únh
             if (uploadDirRealPath == null) {
                 FacesUtil.addFieldError(errorClientId, "Cannot determine server upload directory.");
                 FacesContext.getCurrentInstance().validationFailed();
                 return null;
             }
 
-            //tạo thư mục nếu chưa tồn tại
+            //tß║ío th╞░ mß╗Ñc nß║┐u ch╞░a tß╗ôn tß║íi
             File uploadDir = new File(uploadDirRealPath);
 
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
 
-            //tạo file đích
+            //tß║ío file ─æ├¡ch
             File targetFile = new File(uploadDir, uniqueFileName);
 
-            //ghi file upload vào thư mục
+            //ghi file upload v├áo th╞░ mß╗Ñc
             try (InputStream inputStream = imagePart.getInputStream()) {
                 Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
 
-            //lưu ảnh vào source project
+            //l╞░u ß║únh v├áo source project
             saveToSourceDirectory(targetFile, uniqueFileName, uploadDirRealPath, subDir);
 
-            //trả về tên file để lưu vào database
+            //trß║ú vß╗ü t├¬n file ─æß╗â l╞░u v├áo database
             return uniqueFileName;
         } catch (Exception e) {
-            //xử lý lỗi khi upload
+            //xß╗¡ l├╜ lß╗ùi khi upload
             e.printStackTrace();
             FacesUtil.addFieldError(errorClientId, "Failed to upload image.");
             FacesContext.getCurrentInstance().validationFailed();
@@ -264,14 +264,14 @@ public class ImageUtil {
     }
 
     /**
-     * Xóa hình ảnh trong thư mục resource.
+     * X├│a h├¼nh ß║únh trong th╞░ mß╗Ñc resource.
      *
-     * @param fileName tên file cần xóa
-     * @param subDir thư mục con chứa file
+     * @param fileName t├¬n file cß║ºn x├│a
+     * @param subDir th╞░ mß╗Ñc con chß╗⌐a file
      */
     public static void deleteImage(String fileName, String subDir) {
 
-        //không xóa ảnh mặc định
+        //kh├┤ng x├│a ß║únh mß║╖c ─æß╗ïnh
         if (fileName == null || fileName.isBlank() || fileName.equals(DEFAULT_IMAGE_NAME)) {
             return;
         }
@@ -279,20 +279,20 @@ public class ImageUtil {
         try {
             String resourcePath = "/resources/images/" + (subDir != null && !subDir.isBlank() ? subDir : "");
 
-            //lấy đường dẫn thực tế trên server
+            //lß║Ñy ─æ╞░ß╗¥ng dß║½n thß╗▒c tß║┐ tr├¬n server
             String uploadDirRealPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath(resourcePath);
 
             if (uploadDirRealPath == null) {
                 return;
             }
 
-            // 1. Xóa file ở thư mục runtime
+            // 1. X├│a file ß╗ƒ th╞░ mß╗Ñc runtime
             File imageFile = new File(uploadDirRealPath, fileName);
             if (imageFile.exists()) {
                 Files.delete(imageFile.toPath());
             }
 
-            // 2. Xóa file ở thư mục source code
+            // 2. X├│a file ß╗ƒ th╞░ mß╗Ñc source code
             File webDir = findSourceWebDirectory(uploadDirRealPath);
             if (webDir != null) {
                 File sourceDir = new File(webDir, "resources/images/" + (subDir != null && !subDir.isBlank() ? subDir : ""));

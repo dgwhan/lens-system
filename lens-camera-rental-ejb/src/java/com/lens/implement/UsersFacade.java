@@ -1,8 +1,11 @@
-package com.lens.sbeans;
+package com.lens.implement;
 
-import com.lens.ebeans.Users;
+import com.lens.facade.AbstractFacade;
+import com.lens.facade.UsersFacadeLocal;
+import com.lens.entity.Users;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.Date;
@@ -68,6 +71,20 @@ public class UsersFacade extends AbstractFacade<Users> implements UsersFacadeLoc
     }
 
     @Override
+    public Users findByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return em.createNamedQuery("Users.findByUsername", Users.class)
+                    .setParameter("username", username.trim())
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
     public boolean isUsernameExists(String username) {
         if (username == null || username.trim().isEmpty()) {
             return false;
@@ -113,6 +130,24 @@ public class UsersFacade extends AbstractFacade<Users> implements UsersFacadeLoc
         }
         Long count = query.getSingleResult();
         return count != null && count > 0;
+    }
+
+    @Override
+    public int totalUsers() {
+        Long count = em.createQuery("SELECT COUNT(u) FROM Users u WHERE u.status = 'ACTIVE'", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public int totalAdminRole() {
+        Long count = em.createQuery("SELECT COUNT(u) FROM Users u WHERE u.status = 'ACTIVE' AND UPPER(u.role) = 'ADMIN'", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public int totalCustomerRole() {
+        Long count = em.createQuery("SELECT COUNT(u) FROM Users u WHERE u.status = 'ACTIVE' AND UPPER(u.role) = 'CUSTOMER'", Long.class).getSingleResult();
+        return count != null ? count.intValue() : 0;
     }
 
 }
