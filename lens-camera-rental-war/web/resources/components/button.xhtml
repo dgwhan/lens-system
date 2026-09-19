@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets"
+    xmlns:f="jakarta.faces.core" xmlns:cc="jakarta.faces.composite">
+
+<cc:interface>
+    <cc:attribute name="id" />
+    <cc:attribute name="value" />
+    <cc:attribute name="text" />
+    <cc:attribute name="action" method-signature="java.lang.String action()" />
+    <cc:attribute name="actionListener" method-signature="void actionListener(jakarta.faces.event.ActionEvent)" />
+    <cc:attribute name="type" default="submit" />
+    <cc:attribute name="variant" default="primary" />
+    <cc:attribute name="size" default="md" />
+    <cc:attribute name="pill" type="java.lang.Boolean" default="false" />
+    <cc:attribute name="block" type="java.lang.Boolean" default="false" />
+    <cc:attribute name="disabled" type="java.lang.Boolean" default="false" />
+    <cc:attribute name="href" />
+    <cc:attribute name="target" default="_self" />
+    <cc:attribute name="outcome" />
+    <cc:attribute name="onclick" />
+    <cc:attribute name="styleClass" />
+    <cc:attribute name="style" />
+    <cc:attribute name="title" />
+    <cc:attribute name="ariaLabel" />
+    <cc:attribute name="ajax" type="java.lang.Boolean" default="false" />
+    <cc:attribute name="render" />
+    <cc:attribute name="execute" default="@form" />
+    <cc:clientBehavior name="action" targets="btnCommandLink" event="action" />
+</cc:interface>
+
+<cc:implementation>
+    <!-- Auto-include Shared Buttons Stylesheet -->
+    <h:outputStylesheet library="css" name="buttons.css" />
+
+    <!-- Computed Parameters -->
+    <ui:param name="compLabel" value="#{not empty cc.attrs.text ? cc.attrs.text : cc.attrs.value}" />
+    <ui:param name="compVariant"
+        value="#{empty cc.attrs.variant ? 'btn-primary' : (cc.attrs.variant == 'outline' ? 'btn-outline-primary' : (cc.attrs.variant.contains('btn-') ? cc.attrs.variant : 'btn-'.concat(cc.attrs.variant)))}" />
+    <ui:param name="compSize"
+        value="#{empty cc.attrs.size ? '' : (cc.attrs.size == 'sm' ? 'btn-sm' : (cc.attrs.size == 'lg' ? 'btn-lg' : (cc.attrs.size == 'xs' ? 'btn-xs' : (cc.attrs.size == 'xl' ? 'btn-xl' : (cc.attrs.size.contains('btn-') ? cc.attrs.size : 'btn-'.concat(cc.attrs.size))))))}" />
+    <ui:param name="compClasses"
+        value="btn #{compVariant} #{compSize} #{cc.attrs.pill ? 'btn-pill' : ''} #{cc.attrs.block ? 'btn-block' : ''} #{cc.attrs.disabled ? 'is-disabled' : ''} #{cc.attrs.styleClass}" />
+
+    <!-- Case A: JSF Action CommandLink (when 'action' is provided) -->
+    <ui:fragment rendered="#{not empty cc.attrs.action}">
+        <h:commandLink id="btnCommandLink" action="#{cc.attrs.action}" actionListener="#{cc.attrs.actionListener}"
+            styleClass="#{compClasses}" style="#{cc.attrs.style}" title="#{cc.attrs.title}"
+            onclick="#{cc.attrs.onclick}" disabled="#{cc.attrs.disabled}">
+            <ui:fragment rendered="#{cc.attrs.ajax}">
+                <f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" />
+            </ui:fragment>
+            <ui:fragment rendered="#{not empty compLabel}">
+                #{compLabel}
+            </ui:fragment>
+            <cc:insertChildren />
+        </h:commandLink>
+    </ui:fragment>
+
+    <!-- Case B: Non-Action (delegates to Facelet include logic when action is empty) -->
+    <ui:fragment rendered="#{empty cc.attrs.action}">
+        <ui:include src="/components/button.xhtml">
+            <ui:param name="id" value="#{cc.attrs.id}" />
+            <ui:param name="text" value="#{compLabel}" />
+            <ui:param name="variant" value="#{cc.attrs.variant}" />
+            <ui:param name="size" value="#{cc.attrs.size}" />
+            <ui:param name="type" value="#{cc.attrs.type}" />
+            <ui:param name="href" value="#{cc.attrs.href}" />
+            <ui:param name="target" value="#{cc.attrs.target}" />
+            <ui:param name="outcome" value="#{cc.attrs.outcome}" />
+            <ui:param name="pill" value="#{cc.attrs.pill}" />
+            <ui:param name="block" value="#{cc.attrs.block}" />
+            <ui:param name="disabled" value="#{cc.attrs.disabled}" />
+            <ui:param name="onclick" value="#{cc.attrs.onclick}" />
+            <ui:param name="styleClass" value="#{cc.attrs.styleClass}" />
+            <ui:param name="style" value="#{cc.attrs.style}" />
+            <ui:param name="title" value="#{cc.attrs.title}" />
+            <ui:param name="ariaLabel" value="#{cc.attrs.ariaLabel}" />
+        </ui:include>
+    </ui:fragment>
+</cc:implementation>
+
+</html>

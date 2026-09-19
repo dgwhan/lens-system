@@ -37,4 +37,8 @@ public interface DeviceModelsFacadeLocal {
 
     int totalModelType();
 
+    List<String> findDistinctTypes();
+
+    List<String> findDistinctBrands();
+
 }

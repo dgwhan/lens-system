@@ -9,9 +9,12 @@ function toggleUserDropdown(event) {
 }
 window.toggleUserDropdown = toggleUserDropdown;
 
-document.addEventListener('click', function () {
+document.addEventListener('click', function (event) {
     var menu = document.getElementById('userDropdownMenu');
     if (menu && menu.style.display === 'block') {
-        menu.style.display = 'none';
+        var dropdown = document.querySelector('.user-dropdown');
+        if (!dropdown || !dropdown.contains(event.target)) {
+            menu.style.display = 'none';
+        }
     }
 });

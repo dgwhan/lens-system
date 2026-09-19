@@ -25,10 +25,6 @@ CREATE TABLE Users (
 );
 GO
 
--- Cho phép nhiều user không nhập email (NULL), nhưng nếu có email thì không được trùng lặp
-CREATE UNIQUE NONCLUSTERED INDEX UQ_Users_Email ON Users(email) WHERE email IS NOT NULL;
-GO
-
 -- device models
 CREATE TABLE DeviceModels (
     id INT IDENTITY(1,1) PRIMARY KEY,

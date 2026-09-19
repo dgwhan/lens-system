@@ -24,3 +24,6 @@ Thumbs.db
 # uploaded images
 **/web/resources/images/*/*
 !**/web/resources/images/*/.gitkeep
+
+# agent configurations
+.agents/

@@ -5,8 +5,8 @@ import com.lens.user.facade.UsersFacadeLocal;
 import com.lens.common.util.FacesUtil;
 import com.lens.common.util.ValidationUtil;
 import jakarta.inject.Named;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.List;
  *
  * @author Duong Ngoc Han
  */
-@Named(value = "usersMB")
-@SessionScoped
+@Named(value = "userController")
+@ViewScoped
 public class UserController implements Serializable {
 
     @jakarta.ejb.EJB

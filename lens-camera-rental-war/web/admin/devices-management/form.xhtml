@@ -10,7 +10,7 @@
     <ui:param name="activeMenu" value="devices" />
 
     <ui:define name="title">
-        #{devicesMB.editMode ? 'Edit Device' : 'Create Device'} - Lens Camera Rental
+        #{deviceController.editMode ? 'Edit Device' : 'Create Device'} - Lens Camera Rental
     </ui:define>
 
     <ui:define name="scripts">
@@ -34,7 +34,7 @@
                         <div class="page-header-row">
                             <div>
                                 <div class="page-pretitle">Devices Management</div>
-                                <h1 class="page-title">#{devicesMB.editMode ? 'Edit Device' : 'Create New Device'}</h1>
+                                <h1 class="page-title">#{deviceController.editMode ? 'Edit Device' : 'Create New Device'}</h1>
                             </div>
                             <div>
                                 <h:commandButton value="Back to Devices" action="list" immediate="true"
@@ -47,7 +47,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div>
-                                <h2 class="card-title">#{devicesMB.editMode ? 'Edit Device Information' : 'Device Information'}</h2>
+                                <h2 class="card-title">#{deviceController.editMode ? 'Edit Device Information' : 'Device Information'}</h2>
                             </div>
                         </div>
 
@@ -61,20 +61,20 @@
 
                                     <div class="model-selector" data-selector="device-model">
 
-                                        <h:selectOneMenu id="deviceModel" value="#{devicesMB.selectedDeviceModelId}"
+                                        <h:selectOneMenu id="deviceModel" value="#{deviceController.selectedDeviceModelId}"
                                             required="true" requiredMessage="Please select a device model."
                                             styleClass="model-selector-native">
 
                                             <f:selectItem itemLabel="Select Device Model" itemValue=""
                                                 noSelectionOption="true" />
 
-                                            <f:selectItems value="#{devicesMB.allDeviceModels}" var="dm"
+                                            <f:selectItems value="#{deviceController.allDeviceModels}" var="dm"
                                                 itemValue="#{dm.id}" itemLabel="#{dm.name} (#{dm.model})"
                                                 itemDescription="#{dm.brand}" />
                                         </h:selectOneMenu>
 
                                         <!-- Dữ liệu brand ẩn để JavaScript tìm kiếm nhanh -->
-                                        <ui:repeat value="#{devicesMB.allDeviceModels}" var="dm">
+                                        <ui:repeat value="#{deviceController.allDeviceModels}" var="dm">
                                             <span class="model-meta-data" data-id="#{dm.id}" data-brand="#{dm.brand}"
                                                 style="display:none;"></span>
                                         </ui:repeat>
@@ -102,7 +102,7 @@
                                     <h:outputLabel for="serialNumber" styleClass="form-label">
                                         Serial Number <span class="form-required">*</span>
                                     </h:outputLabel>
-                                    <h:inputText id="serialNumber" value="#{devicesMB.devices.serialNumber}" required="true"
+                                    <h:inputText id="serialNumber" value="#{deviceController.devices.serialNumber}" required="true"
                                         requiredMessage="Serial number is required." pt:placeholder="e.g. SN-SONY-00123"
                                         styleClass="form-control" />
                                     <h:message for="serialNumber" styleClass="field-error" />
@@ -116,10 +116,10 @@
                                 styleClass="btn btn-outline-secondary" />
 
                             <div>
-                                <h:commandButton value="Save Changes" action="#{devicesMB.updateDevice()}"
-                                    rendered="#{devicesMB.editMode}" styleClass="btn btn-primary" />
-                                <h:commandButton value="Create Device" action="#{devicesMB.insertDevice()}"
-                                    rendered="#{not devicesMB.editMode}" styleClass="btn btn-primary" />
+                                <h:commandButton value="Save Changes" action="#{deviceController.updateDevice()}"
+                                    rendered="#{deviceController.editMode}" styleClass="btn btn-primary" />
+                                <h:commandButton value="Create Device" action="#{deviceController.insertDevice()}"
+                                    rendered="#{not deviceController.editMode}" styleClass="btn btn-primary" />
                             </div>
                         </div>
                     </div>

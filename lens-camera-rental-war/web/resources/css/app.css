@@ -8,6 +8,24 @@
     --tblr-body-color: #1e293b;
     --tblr-primary: #514fff;
     --tblr-border-color: #e2e8f0;
+
+    --status-success-bg: #E8F5E9;
+    --status-success-text: #2E7D32;
+
+    --status-warning-bg: #FFF3E0;
+    --status-warning-text: #EF6C00;
+
+    --status-pending-bg: #FFF8E1;
+    --status-pending-text: #F9A825;
+
+    --status-danger-bg: #FFEBEE;
+    --status-danger-text: #C62828;
+
+    --status-info-bg: #E3F2FD;
+    --status-info-text: #1565C0;
+
+    --status-neutral-bg: #F5F5F5;
+    --status-neutral-text: #616161;
 }
 
 body {

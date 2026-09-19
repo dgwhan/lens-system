@@ -9,7 +9,7 @@
     <ui:param name="activeMenu" value="users" />
 
     <ui:define name="title">
-        #{usersMB.users.fullName} - User Details
+        #{userController.users.fullName} - User Details
     </ui:define>
 
     <ui:define name="head">
@@ -31,7 +31,7 @@
                                 <h:commandButton value="Back" action="list" immediate="true"
                                                  styleClass="btn btn-outline-secondary" />
                                 <h:commandButton value="Edit User"
-                                                 action="#{usersMB.editUser(usersMB.users.id)}"
+                                                 action="#{userController.editUser(userController.users.id)}"
                                                  styleClass="btn btn-primary" />
                             </div>
                         </div>
@@ -49,34 +49,34 @@
                                 <div class="detail-card-body">
                                     <div class="detail-identity-row">
                                         <div class="detail-avatar">
-                                            <h:outputText value="#{usersMB.users.fullName != null and usersMB.users.fullName.length() > 0 ? usersMB.users.fullName.substring(0, 1).toUpperCase() : 'U'}" />
+                                            <h:outputText value="#{userController.users.fullName != null and userController.users.fullName.length() > 0 ? userController.users.fullName.substring(0, 1).toUpperCase() : 'U'}" />
                                         </div>
 
                                         <div class="detail-identity-content">
                                             <div class="detail-identity-field">
                                                 <div class="detail-label">Full Name</div>
                                                 <h3 class="detail-identity-title">
-                                                    <h:outputText value="#{usersMB.users.fullName}" />
+                                                    <h:outputText value="#{userController.users.fullName}" />
                                                 </h3>
                                             </div>
                                             <div class="detail-identity-meta-grid">
                                                 <div class="detail-item">
                                                     <div class="detail-label">User ID</div>
                                                     <div class="detail-value detail-value-strong">
-                                                        <h:outputText value="User ##{usersMB.users.id}" />
+                                                        <h:outputText value="User ##{userController.users.id}" />
                                                     </div>
                                                 </div>
                                                 <div class="detail-item">
                                                     <div class="detail-label">Username</div>
                                                     <div class="detail-value">
-                                                        <h:outputText value="@#{usersMB.users.username}" />
+                                                        <h:outputText value="@#{userController.users.username}" />
                                                     </div>
                                                 </div>
                                                 <div class="detail-item">
                                                     <div class="detail-label">Role</div>
                                                     <div>
-                                                        <span class="badge-role #{usersMB.users.role == 'ADMIN' ? 'badge-admin' : 'badge-customer'}">
-                                                            <h:outputText value="#{usersMB.users.role == 'ADMIN' ? 'Admin' : 'Customer'}" />
+                                                        <span class="badge-role #{userController.users.role == 'ADMIN' ? 'badge-admin' : 'badge-customer'}">
+                                                            <h:outputText value="#{userController.users.role == 'ADMIN' ? 'Admin' : 'Customer'}" />
                                                         </span>
                                                     </div>
                                                 </div>
@@ -96,19 +96,19 @@
                                         <div class="detail-item">
                                             <div class="detail-label">Username</div>
                                             <div class="detail-value">
-                                                <h:outputText value="#{usersMB.users.username}" />
+                                                <h:outputText value="#{userController.users.username}" />
                                             </div>
                                         </div>
                                         <div class="detail-item">
                                             <div class="detail-label">Email Address</div>
-                                            <div class="detail-value #{empty usersMB.users.email ? 'detail-empty' : ''}">
-                                                <h:outputText value="#{not empty usersMB.users.email ? usersMB.users.email : 'None provided'}" />
+                                            <div class="detail-value #{empty userController.users.email ? 'detail-empty' : ''}">
+                                                <h:outputText value="#{not empty userController.users.email ? userController.users.email : 'None provided'}" />
                                             </div>
                                         </div>
                                         <div class="detail-item">
                                             <div class="detail-label">Phone Number</div>
                                             <div class="detail-value">
-                                                <h:outputText value="#{usersMB.users.phone}" />
+                                                <h:outputText value="#{userController.users.phone}" />
                                             </div>
                                         </div>
                                     </div>
@@ -122,8 +122,8 @@
                             <div class="detail-card">
                                 <div class="detail-card-header detail-status-card-header">
                                     <h2 class="detail-card-title">Status</h2>
-                                    <span class="badge-status #{usersMB.users.status == 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">
-                                        <h:outputText value="#{usersMB.users.status == 'ACTIVE' ? 'Active' : 'Inactive'}" />
+                                    <span class="badge-status #{userController.users.status == 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">
+                                        <h:outputText value="#{userController.users.status == 'ACTIVE' ? 'Active' : 'Inactive'}" />
                                     </span>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@
                                         <div class="detail-meta-row">
                                             <span class="detail-meta-label">Created At</span>
                                             <span class="detail-meta-value">
-                                                <h:outputText value="#{usersMB.users.createdAt}">
+                                                <h:outputText value="#{userController.users.createdAt}">
                                                     <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
                                                 </h:outputText>
                                             </span>
@@ -146,7 +146,7 @@
                                         <div class="detail-meta-row">
                                             <span class="detail-meta-label">Updated At</span>
                                             <span class="detail-meta-value">
-                                                <h:outputText value="#{usersMB.users.updatedAt}">
+                                                <h:outputText value="#{userController.users.updatedAt}">
                                                     <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
                                                 </h:outputText>
                                             </span>

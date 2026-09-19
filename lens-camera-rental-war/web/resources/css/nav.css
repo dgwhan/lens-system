@@ -1,0 +1,167 @@
+.header-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    min-height: 44px;
+    width: 100%;
+    background-color: var(--hdr-bg, #ffffff);
+    position: relative;
+    border-top: none;
+    box-sizing: border-box;
+}
+
+.header-nav-container,
+.main-nav {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    height: 100%;
+}
+
+.nav-links li {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.nav-links li a,
+.nav-links li .nav-item {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 4px;
+    font-family: var(--hdr-font, 'Inter', sans-serif);
+    font-size: 0.9375rem;
+    /* ~15px */
+    font-weight: 500;
+    color: var(--hdr-gray-600, #666666);
+    text-decoration: none !important;
+    position: relative;
+    transition: color 0.18s ease;
+}
+
+.nav-links li a:hover,
+.nav-links li .nav-item:hover {
+    color: var(--hdr-black, #000000);
+}
+
+/* Active State: Black text + Underline indicator flush with bottom border */
+.nav-links li a.active,
+.nav-links li .nav-item.active {
+    color: var(--hdr-black, #000000);
+    font-weight: 700;
+}
+
+.nav-links li a.active::after,
+.nav-links li .nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--hdr-black, #000000);
+    border-radius: 1px 1px 0 0;
+}
+
+.nav-links li a:focus-visible {
+    outline: 2px solid var(--hdr-black, #000000);
+    outline-offset: 3px;
+}
+
+/* Tablet Breakpoint (~768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .nav-links {
+        gap: 24px;
+    }
+
+    .nav-links li a,
+    .nav-links li .nav-item {
+        font-size: 0.875rem;
+    }
+}
+
+/* Mobile Breakpoint (<= 767px) - Dropdown toggle when .nav-open */
+@media (max-width: 767px) {
+    .header-navigation {
+        display: none;
+        width: 100%;
+        height: auto;
+        min-height: unset;
+        background-color: var(--hdr-bg, #ffffff);
+        border-top: 1px solid var(--hdr-border, #e5e7eb);
+        padding: 6px 0 10px;
+        box-sizing: border-box;
+    }
+
+    /* Open State on Mobile */
+    .site-header.nav-open .header-navigation {
+        display: block;
+    }
+
+    .header-nav-container,
+    .main-nav {
+        width: 100%;
+        height: auto;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 2px;
+        width: 100%;
+        height: auto;
+        padding: 0 16px;
+    }
+
+    .nav-links li {
+        width: 100%;
+        height: auto;
+    }
+
+    .nav-links li a,
+    .nav-links li .nav-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 42px;
+        padding: 0 12px;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--hdr-gray-700, #333333);
+        border-radius: 6px;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li .nav-item:hover {
+        background-color: var(--hdr-gray-100, #f5f5f5);
+        color: var(--hdr-black, #000000);
+    }
+
+    .nav-links li a.active,
+    .nav-links li .nav-item.active {
+        background-color: var(--hdr-gray-100, #f5f5f5);
+        color: var(--hdr-black, #000000);
+        font-weight: 700;
+    }
+
+    .nav-links li a.active::after,
+    .nav-links li .nav-item.active::after {
+        display: none;
+    }
+}

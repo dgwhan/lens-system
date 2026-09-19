@@ -7,8 +7,8 @@ import com.lens.device_model.facade.DeviceModelsFacadeLocal;
 import com.lens.common.util.FacesUtil;
 import com.lens.common.util.ImageUtil;
 import jakarta.inject.Named;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -17,8 +17,8 @@ import java.util.List;
  *
  * @author Duong Ngoc Han
  */
-@Named(value = "devicesMB")
-@SessionScoped
+@Named(value = "deviceController")
+@ViewScoped
 public class DeviceController implements Serializable {
 
     @jakarta.ejb.EJB

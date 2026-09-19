@@ -39,7 +39,7 @@
                             <h1 class="page-title">Device Models Management</h1>
                         </div>
                         <div>
-                            <h:commandButton value="+ Add Model" action="#{deviceModelsMB.newDeviceModel()}"
+                            <h:commandButton value="+ Add Model" action="#{deviceModelsController.newDeviceModel()}"
                                 styleClass="btn btn-primary" />
                         </div>
                     </div>
@@ -50,25 +50,25 @@
                     <!-- Total Models -->
                     <div class="stat-card">
                         <span class="stat-label">Total Models</span>
-                        <div class="stat-value">#{deviceModelsMB.totalDeviceModels}</div>
+                        <div class="stat-value">#{deviceModelsController.totalDeviceModels}</div>
                     </div>
 
                     <!-- Brands -->
                     <div class="stat-card">
                         <span class="stat-label">Total Brands</span>
-                        <div class="stat-value">#{deviceModelsMB.totalModelBrand}</div>
+                        <div class="stat-value">#{deviceModelsController.totalModelBrand}</div>
                     </div>
 
                     <!-- Model Types -->
                     <div class="stat-card">
                         <span class="stat-label">Total Model Types</span>
-                        <div class="stat-value">#{deviceModelsMB.totalModelType}</div>
+                        <div class="stat-value">#{deviceModelsController.totalModelType}</div>
                     </div>
                 </h:panelGroup>
 
                 <!-- Search Bar -->
                 <h:panelGroup id="searchBar" layout="block" styleClass="users-search">
-                    <h:inputText id="keyword" value="#{deviceModelsMB.keyword}"
+                    <h:inputText id="keyword" value="#{deviceModelsController.keyword}"
                         pt:placeholder="Search model name, brand, model code, type..."
                         styleClass="form-control search-input">
                         <f:ajax event="keyup" delay="300" render="deviceModelsTableWrapper" />
@@ -78,7 +78,7 @@
                         <f:ajax execute="@form" render="deviceModelsTableWrapper" />
                     </h:commandButton>
 
-                    <h:commandButton value="Reset" action="#{deviceModelsMB.resetFilter()}"
+                    <h:commandButton value="Reset" action="#{deviceModelsController.resetFilter()}"
                         styleClass="btn btn-outline-secondary">
                         <f:ajax render="searchBar deviceModelsTableWrapper" />
                     </h:commandButton>
@@ -86,7 +86,7 @@
 
                 <div class="card">
                     <h:panelGroup id="deviceModelsTableWrapper" layout="block" styleClass="table-wrapper">
-                        <h:dataTable id="deviceModelsTable" value="#{deviceModelsMB.showAllDeviceModel()}" var="dm"
+                        <h:dataTable id="deviceModelsTable" value="#{deviceModelsController.showAllDeviceModel()}" var="dm"
                             styleClass="data-table">
 
                             <!-- ID -->
@@ -98,9 +98,9 @@
                             <!-- Image -->
                             <h:column>
                                 <f:facet name="header">Image</f:facet>
-                                <img src="#{deviceModelsMB.getImageUrl(dm.imageUrl)}" alt="#{dm.name}"
+                                <img src="#{deviceModelsController.getImageUrl(dm.imageUrl)}" alt="#{dm.name}"
                                     class="model-table-thumb"
-                                    onerror="this.onerror=null;this.src='#{deviceModelsMB.defaultImageUrl}';" />
+                                    onerror="this.onerror=null;this.src='#{deviceModelsController.defaultImageUrl}';" />
                             </h:column>
 
                             <!-- Name -->
@@ -144,11 +144,11 @@
                             <h:column>
                                 <f:facet name="header">Action</f:facet>
                                 <div class="table-row-actions">
-                                    <h:commandButton value="Detail" action="#{deviceModelsMB.detailDeviceModel(dm.id)}"
+                                    <h:commandButton value="Detail" action="#{deviceModelsController.detailDeviceModel(dm.id)}"
                                         styleClass="btn btn-sm btn-outline-info" />
-                                    <h:commandButton value="Edit" action="#{deviceModelsMB.editDeviceModel(dm.id)}"
+                                    <h:commandButton value="Edit" action="#{deviceModelsController.editDeviceModel(dm.id)}"
                                         styleClass="btn btn-sm btn-outline-primary" />
-                                    <h:commandButton value="Delete" action="#{deviceModelsMB.deleteDeviceModel(dm.id)}"
+                                    <h:commandButton value="Delete" action="#{deviceModelsController.deleteDeviceModel(dm.id)}"
                                         styleClass="btn btn-sm btn-outline-danger"
                                         onclick="if (!confirm('Are you sure you want to delete this device model?')) return false;">
                                         <f:ajax render="deviceModelsTableWrapper statsCardsWrapper"

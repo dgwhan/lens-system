@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Customer Breadcrumb Component Styles
+   Monochrome / Subtle Gray Reference: HOME / DEVICES / Current Page Name
+   ========================================================================== */
+
+.customer-breadcrumb {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    margin-bottom: 1.5rem;
+    font-family: var(--tblr-font-sans-serif, 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: 0.8125rem; /* ~13px */
+    line-height: 1.4;
+}
+
+.breadcrumb-list {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+/* Breadcrumb Links: HOME, DEVICES, etc. (Subtle Gray, Dark on Hover, NO BLUE) */
+.breadcrumb-link {
+    color: #64748b !important;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-decoration: none !important;
+    transition: color 0.15s ease;
+}
+
+.breadcrumb-link:hover,
+.breadcrumb-link:focus {
+    color: #0f172a !important;
+    text-decoration: underline !important;
+}
+
+/* Separator '/' */
+.breadcrumb-separator {
+    display: inline-flex;
+    align-items: center;
+    color: #94a3b8 !important;
+    margin: 0 0.5rem;
+    font-weight: 400;
+    user-select: none;
+}
+
+/* Current Active Page: e.g. Canon R50 / Sony Alpha 7 IV (Bold, Dark Black) */
+.breadcrumb-current {
+    color: #0f172a !important;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}

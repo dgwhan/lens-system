@@ -1,4 +1,7 @@
 /* customer.css - Navigation Header & Customer Portal styles */
+@import url('header.css');
+@import url('breadcrumb.css');
+@import url('datepicker.css');
 
 .btn-admin-shortcut {
     margin-right: 0.5rem;

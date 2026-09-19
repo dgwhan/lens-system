@@ -100,4 +100,14 @@ public class DeviceModelsFacade extends AbstractFacade<DeviceModels> implements 
         return count != null ? count.intValue() : 0;
     }
 
+    @Override
+    public List<String> findDistinctTypes() {
+        return em.createQuery("SELECT DISTINCT dm.type FROM DeviceModels dm WHERE dm.type IS NOT NULL AND TRIM(dm.type) != '' ORDER BY dm.type ASC", String.class).getResultList();
+    }
+
+    @Override
+    public List<String> findDistinctBrands() {
+        return em.createQuery("SELECT DISTINCT dm.brand FROM DeviceModels dm WHERE dm.brand IS NOT NULL AND TRIM(dm.brand) != '' ORDER BY dm.brand ASC", String.class).getResultList();
+    }
+
 }

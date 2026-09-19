@@ -6,8 +6,9 @@ import com.lens.device_model.facade.DeviceModelsFacadeLocal;
 import com.lens.device.facade.DevicesFacadeLocal;
 import com.lens.common.util.ImageUtil;
 import com.lens.common.util.FacesUtil;
-import jakarta.enterprise.context.SessionScoped;
+import com.lens.common.util.FormatUtil;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import jakarta.servlet.http.Part;
 import java.io.Serializable;
@@ -18,8 +19,8 @@ import java.util.List;
  *
  * @author Duong Ngoc Han
  */
-@Named(value = "deviceModelsMB")
-@SessionScoped
+@Named(value = "deviceModelsController")
+@ViewScoped
 public class DeviceModelController implements Serializable {
 
     @jakarta.ejb.EJB
@@ -294,6 +295,23 @@ public class DeviceModelController implements Serializable {
             return java.util.Collections.emptyList();
         }
         return devicesFacade.findByDeviceModelId(deviceModels.getId());
+    }
+
+    public List<DeviceModels> getFeaturedDevices() {
+        try {
+            List<DeviceModels> all = deviceModelsFacade.search("");
+            if (all != null && !all.isEmpty()) {
+                int limit = Math.min(4, all.size());
+                return all.subList(0, limit);
+            }
+            return java.util.Collections.emptyList();
+        } catch (Exception e) {
+            return java.util.Collections.emptyList();
+        }
+    }
+
+    public String formatPrice(long price) {
+        return FormatUtil.formatPrice(price);
     }
 
 }

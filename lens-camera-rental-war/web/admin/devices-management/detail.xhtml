@@ -9,7 +9,7 @@
     <ui:param name="activeMenu" value="devices" />
 
     <ui:define name="title">
-        Device ##{devicesMB.devices.id} (#{devicesMB.devices.serialNumber}) - Device Details
+        Device ##{deviceController.devices.id} (#{deviceController.devices.serialNumber}) - Device Details
     </ui:define>
 
     <ui:define name="head">
@@ -31,7 +31,7 @@
                                 <h:commandButton value="Back" action="list" immediate="true"
                                                  styleClass="btn btn-outline-secondary" />
                                 <h:commandButton value="Edit Device"
-                                                 action="#{devicesMB.editDevice(devicesMB.devices.id)}"
+                                                 action="#{deviceController.editDevice(deviceController.devices.id)}"
                                                  styleClass="btn btn-primary" />
                             </div>
                         </div>
@@ -48,36 +48,36 @@
                                 </div>
                                 <div class="detail-card-body">
                                 <div class="detail-identity-row">
-                                    <img src="#{devicesMB.modelImageUrl}"
-                                         alt="#{devicesMB.devices.deviceModelId.name}"
+                                    <img src="#{deviceController.modelImageUrl}"
+                                         alt="#{deviceController.devices.deviceModelId.name}"
                                          class="detail-image"
-                                         onerror="this.onerror=null;this.src='#{devicesMB.defaultImageUrl}';" />
+                                         onerror="this.onerror=null;this.src='#{deviceController.defaultImageUrl}';" />
 
                                     <div class="detail-identity-content">
                                         <div class="detail-identity-field">
                                             <div class="detail-label">Serial Number</div>
                                             <h3 class="detail-identity-title">
-                                                <h:outputText value="#{devicesMB.devices.serialNumber}" />
+                                                <h:outputText value="#{deviceController.devices.serialNumber}" />
                                             </h3>
                                         </div>
                                         <div class="detail-identity-meta-grid">
                                             <div class="detail-item">
                                                 <div class="detail-label">Device ID</div>
                                                 <div class="detail-value detail-value-strong">
-                                                    <h:outputText value="Device ##{devicesMB.devices.id}" />
+                                                    <h:outputText value="Device ##{deviceController.devices.id}" />
                                                 </div>
                                             </div>
                                             <div class="detail-item">
                                                 <div class="detail-label">Model</div>
                                                 <div class="detail-value detail-value-strong">
-                                                    <h:outputText value="#{devicesMB.devices.deviceModelId.brand} - #{devicesMB.devices.deviceModelId.name}" />
+                                                    <h:outputText value="#{deviceController.devices.deviceModelId.brand} - #{deviceController.devices.deviceModelId.name}" />
                                                 </div>
                                             </div>
                                             <div class="detail-item">
                                                 <div class="detail-label">Status</div>
                                                 <div>
-                                                    <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-available' : 'badge-renting'}">
-                                                        <h:outputText value="#{devicesMB.devices.status == 'AVAILABLE' ? 'Available' : 'Renting'}" />
+                                                    <span class="badge-status #{deviceController.devices.status == 'AVAILABLE' ? 'badge-available' : 'badge-renting'}">
+                                                        <h:outputText value="#{deviceController.devices.status == 'AVAILABLE' ? 'Available' : 'Renting'}" />
                                                     </span>
                                                 </div>
                                             </div>
@@ -97,31 +97,31 @@
                                     <div class="detail-item">
                                         <div class="detail-label">Model Name</div>
                                         <div class="detail-value detail-value-strong">
-                                            <h:outputText value="#{devicesMB.devices.deviceModelId.name}" />
+                                            <h:outputText value="#{deviceController.devices.deviceModelId.name}" />
                                         </div>
                                     </div>
                                     <div class="detail-item">
                                         <div class="detail-label">Brand</div>
                                         <div class="detail-value detail-value-strong">
-                                            <h:outputText value="#{devicesMB.devices.deviceModelId.brand}" />
+                                            <h:outputText value="#{deviceController.devices.deviceModelId.brand}" />
                                         </div>
                                     </div>
                                     <div class="detail-item">
                                         <div class="detail-label">Model Code</div>
                                         <div class="detail-value">
-                                            <h:outputText value="#{devicesMB.devices.deviceModelId.model}" />
+                                            <h:outputText value="#{deviceController.devices.deviceModelId.model}" />
                                         </div>
                                     </div>
                                     <div class="detail-item">
                                         <div class="detail-label">Type</div>
                                         <div class="detail-value">
-                                            <h:outputText value="#{devicesMB.devices.deviceModelId.type}" />
+                                            <h:outputText value="#{deviceController.devices.deviceModelId.type}" />
                                         </div>
                                     </div>
                                     <div class="detail-item detail-item-full">
                                         <div class="detail-label">Description</div>
-                                        <div class="detail-value #{empty devicesMB.devices.deviceModelId.description ? 'detail-empty' : ''}">
-                                            <h:outputText value="#{not empty devicesMB.devices.deviceModelId.description ? devicesMB.devices.deviceModelId.description : 'No description provided.'}" />
+                                        <div class="detail-value #{empty deviceController.devices.deviceModelId.description ? 'detail-empty' : ''}">
+                                            <h:outputText value="#{not empty deviceController.devices.deviceModelId.description ? deviceController.devices.deviceModelId.description : 'No description provided.'}" />
                                         </div>
                                     </div>
                                 </div>
@@ -135,8 +135,8 @@
                         <div class="detail-card">
                             <div class="detail-card-header detail-status-card-header">
                                 <h2 class="detail-card-title">Status</h2>
-                                <span class="badge-status #{devicesMB.devices.status == 'AVAILABLE' ? 'badge-available' : 'badge-renting'}">
-                                    <h:outputText value="#{devicesMB.devices.status == 'AVAILABLE' ? 'Available' : 'Renting'}" />
+                                <span class="badge-status #{deviceController.devices.status == 'AVAILABLE' ? 'badge-available' : 'badge-renting'}">
+                                    <h:outputText value="#{deviceController.devices.status == 'AVAILABLE' ? 'Available' : 'Renting'}" />
                                 </span>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                                         <div class="detail-label">Rental Price</div>
                                         <div class="detail-price-row">
                                             <span class="detail-price-value">
-                                                <h:outputText value="#{devicesMB.devices.deviceModelId.rentalPrice}">
+                                                <h:outputText value="#{deviceController.devices.deviceModelId.rentalPrice}">
                                                     <f:convertNumber pattern="#,##0 VND" />
                                                 </h:outputText>
                                             </span>
@@ -163,7 +163,7 @@
                                         <div class="detail-label">Deposit</div>
                                         <div class="detail-price-row">
                                             <span class="detail-price-value">
-                                                <h:outputText value="#{devicesMB.devices.deviceModelId.depositAmount}">
+                                                <h:outputText value="#{deviceController.devices.deviceModelId.depositAmount}">
                                                     <f:convertNumber pattern="#,##0 VND" />
                                                 </h:outputText>
                                             </span>
@@ -183,7 +183,7 @@
                                     <div class="detail-meta-row">
                                         <span class="detail-meta-label">Created At</span>
                                         <span class="detail-meta-value">
-                                            <h:outputText value="#{devicesMB.devices.createdAt}">
+                                            <h:outputText value="#{deviceController.devices.createdAt}">
                                                 <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
                                             </h:outputText>
                                         </span>
@@ -191,7 +191,7 @@
                                     <div class="detail-meta-row">
                                         <span class="detail-meta-label">Updated At</span>
                                         <span class="detail-meta-value">
-                                            <h:outputText value="#{devicesMB.devices.updatedAt}">
+                                            <h:outputText value="#{deviceController.devices.updatedAt}">
                                                 <f:convertDateTime pattern="MMM dd, yyyy · HH:mm" />
                                             </h:outputText>
                                         </span>
