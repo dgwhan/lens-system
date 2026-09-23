@@ -14,7 +14,7 @@
          role="navigation"
          aria-label="Pagination"
          data-current-page="#{not empty currentPage ? currentPage : 1}"
-         data-page-size="#{not empty pageSize ? pageSize : 12}"
+         data-page-size="#{not empty pageSize and pageSize gt 0 ? pageSize : paginationConfig.pageSize}"
          data-total-items="#{not empty totalItems ? totalItems : 0}"
          data-item-label="#{not empty itemLabel ? itemLabel : 'devices'}"
          data-show-summary="#{showSummary ne false ? 'true' : 'false'}"
@@ -23,17 +23,17 @@
          data-page-param="#{not empty pageParam ? pageParam : 'page'}">
 
         <div class="pagination-container">
-            <!-- Mobile Stack Top Header (Section 5: PAGE X OF Y) -->
+            <!-- Mobile Stack Top Header -->
             <div class="pagination-mobile-header" data-role="mobile-header">
                 PAGE #{not empty currentPage ? currentPage : 1}
             </div>
 
-            <!-- Result Summary (Desktop Left / Mobile Bottom: Showing X–Y of Z devices) -->
+            <!-- Result Summary -->
             <div class="pagination-summary" data-role="summary">
                 Showing <span class="pagination-summary-strong">--</span> of <span class="pagination-summary-strong">#{not empty totalItems ? totalItems : 0}</span> #{not empty itemLabel ? itemLabel : 'devices'}
             </div>
 
-            <!-- Pagination Controls Row (Desktop Right / Mobile Center: < 1 2 3 ... 10 >) -->
+            <!-- Pagination Controls Row  -->
             <ul class="pagination-controls" data-role="controls">
                 <!-- Dynamically populated and calibrated by pagination.js -->
             </ul>

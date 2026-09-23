@@ -1,45 +1,69 @@
 package com.lens.device_model;
 
+import com.lens.availability.dto.AvailabilityResult;
+import com.lens.availability.service.AvailabilityServiceLocal;
+import com.lens.common.util.DateUtil;
 import com.lens.common.util.FormatUtil;
-import com.lens.device.entity.Devices;
 import com.lens.device.facade.DevicesFacadeLocal;
 import com.lens.device_model.entity.DeviceModels;
 import com.lens.device_model.facade.DeviceModelsFacadeLocal;
 import jakarta.ejb.EJB;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.IOException;
-import java.util.List;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  *
  * @author Duong Ngoc Han
  */
 @Named(value = "deviceDetailController")
-@RequestScoped
-public class DeviceDetailController {
+@ViewScoped
+public class DeviceDetailController implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @EJB
     private DeviceModelsFacadeLocal deviceModelsFacade;
 
     @EJB
-    private DevicesFacadeLocal devicesFacade;
+    private AvailabilityServiceLocal availabilityService;
 
     private DeviceModels deviceModel;
     private Integer id;
     private String startDate;
     private String endDate;
+    private AvailabilityResult availabilityResult;
 
     public DeviceDetailController() {
     }
 
     public void loadDeviceDetail() {
         if (id == null || id <= 0) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context != null) {
+                String idParam = context.getExternalContext().getRequestParameterMap().get("id");
+                if (idParam == null || idParam.isEmpty()) {
+                    idParam = context.getExternalContext().getRequestParameterMap().get("deviceModelIdHidden");
+                }
+                if (idParam != null && !idParam.isEmpty()) {
+                    try {
+                        id = Integer.parseInt(idParam);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+            }
+        }
+
+        if (id == null || id <= 0) {
             redirectTo404();
             return;
         }
+
         deviceModel = deviceModelsFacade.find(id);
 
         if (deviceModel == null) {
@@ -47,10 +71,70 @@ public class DeviceDetailController {
         }
     }
 
+    //kiểm tra ngày thuê đang chọn có khả dụng không
+    public void checkAvailability() {
+        if (id == null || id <= 0) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context != null) {
+                String idParam = context.getExternalContext().getRequestParameterMap().get("id");
+                if (idParam == null || idParam.isEmpty()) {
+                    idParam = context.getExternalContext().getRequestParameterMap().get("deviceModelIdHidden");
+                }
+                if (idParam != null && !idParam.isEmpty()) {
+                    try {
+                        id = Integer.parseInt(idParam);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+            }
+        }
+
+        if (deviceModel == null && id != null && id > 0) {
+            deviceModel = deviceModelsFacade.find(id);
+        }
+
+        //kiểm tra ngày trước khi parse
+        if (startDate == null || startDate.trim().isEmpty() || endDate == null || endDate.trim().isEmpty()) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context != null) {
+                if (startDate == null || startDate.trim().isEmpty()) {
+                    startDate = context.getExternalContext().getRequestParameterMap().get("startDate");
+                    if (startDate == null || startDate.trim().isEmpty()) {
+                        startDate = context.getExternalContext().getRequestParameterMap().get("rentalStartDate");
+                    }
+                }
+                if (endDate == null || endDate.trim().isEmpty()) {
+                    endDate = context.getExternalContext().getRequestParameterMap().get("endDate");
+                    if (endDate == null || endDate.trim().isEmpty()) {
+                        endDate = context.getExternalContext().getRequestParameterMap().get("rentalEndDate");
+                    }
+                }
+            }
+        }
+
+        if (startDate == null || startDate.trim().isEmpty() || endDate == null || endDate.trim().isEmpty()) {
+            availabilityResult = new AvailabilityResult(false, 0, 0, 0, "Please select both start date and end date.");
+            return;
+        }
+
+        try {
+            //convert String từ form thành Date thông qua DateUtil
+            Date requestedStartDate = DateUtil.parseDate(startDate);
+            Date requestedEndDate = DateUtil.parseDate(endDate);
+            //gọi business service
+            availabilityResult = availabilityService.checkAvailability(id, requestedStartDate, requestedEndDate);
+        } catch (ParseException ex) {
+            //ngày không đúng format
+            availabilityResult = new AvailabilityResult(false, 0, 0, 0, "Please select a valid rental period.");
+        }
+    }
+
     private void redirectTo404() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
+
         if (facesContext != null) {
             ExternalContext ec = facesContext.getExternalContext();
+
             try {
                 ec.responseSendError(404, "Device not found");
                 facesContext.responseComplete();
@@ -60,65 +144,43 @@ public class DeviceDetailController {
         }
     }
 
-    /**
-     * Check if at least one physical device of this model has status AVAILABLE.
-     *
-     * @return true if available
-     */
+    //thiết bị còn hàng
+    public boolean isProductAvailable() {
+        if (id == null || availabilityService == null) {
+            return false;
+        }
+        return availabilityService.isProductAvailable(id);
+    }
+
+    //thiết bị hết hàng
+    public String getProductAvailabilityStatus() {
+        if (id == null || availabilityService == null) {
+            return "OUT OF STOCK";
+        }
+        return availabilityService.getProductAvailabilityStatus(id);
+    }
+
     public boolean isAvailable() {
-        if (id == null) {
-            return false;
-        }
-        List<Devices> devices = devicesFacade.findByDeviceModelId(id);
-        if (devices == null || devices.isEmpty()) {
-            return false;
-        }
-        return devices.stream().anyMatch(d -> "AVAILABLE".equalsIgnoreCase(d.getStatus()));
+        return isProductAvailable();
     }
 
-    /**
-     * Get human-readable availability status string ("AVAILABLE", "RENTING", or "UNAVAILABLE").
-     *
-     * @return status name
-     */
     public String getAvailabilityStatus() {
-        if (id == null) {
-            return "UNAVAILABLE";
-        }
-        List<Devices> devices = devicesFacade.findByDeviceModelId(id);
-        if (devices == null || devices.isEmpty()) {
-            return "UNAVAILABLE";
-        }
-        boolean hasAvailable = devices.stream().anyMatch(d -> "AVAILABLE".equalsIgnoreCase(d.getStatus()));
-        return hasAvailable ? "AVAILABLE" : "RENTING";
+        return getProductAvailabilityStatus();
     }
 
-    /**
-     * Format currency amount for display (e.g. 350000 -> "350,000 VND").
-     *
-     * @param price the price to format
-     * @return formatted currency
-     */
+    public String getStorePhone() {
+        return "+84 xxx xxx xxx";
+    }
+
+
     public String formatPrice(long price) {
         return FormatUtil.formatPrice(price);
     }
 
-    /**
-     * Format number with thousand separators (e.g. 350000 -> "350,000").
-     *
-     * @param number the number to format
-     * @return formatted string
-     */
     public String formatNumber(long number) {
         return FormatUtil.formatNumber(number);
     }
 
-    /**
-     * Get browser request URL for device image.
-     *
-     * @param imageName the image filename or path
-     * @return full resource request URL
-     */
     public String getImageUrl(String imageName) {
         return com.lens.common.util.ImageUtil.getDeviceImageUrl(imageName);
     }
@@ -153,5 +215,47 @@ public class DeviceDetailController {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public AvailabilityResult getAvailabilityResult() {
+        return availabilityResult;
+    }
+
+    public long getRentalDays() {
+        return DateUtil.calculateDaysBetween(startDate, endDate);
+    }
+
+    public long getCalculatedRentalFee() {
+        if (deviceModel == null) {
+            return 0;
+        }
+        return getRentalDays() * deviceModel.getRentalPrice();
+    }
+
+    public String getFormattedRentalFee() {
+        return formatPrice(getCalculatedRentalFee());
+    }
+
+    public long getEstimatedTotalAmount() {
+        if (deviceModel == null) {
+            return 0;
+        }
+        return getCalculatedRentalFee() + deviceModel.getDepositAmount();
+    }
+
+    public String getFormattedEstimatedTotal() {
+        return formatPrice(getEstimatedTotalAmount());
+    }
+
+    public String getDisplayStartDate() {
+        return DateUtil.formatDisplayDate(startDate);
+    }
+
+    public String getDisplayEndDate() {
+        return DateUtil.formatDisplayDate(endDate);
+    }
+
+    public String formatDisplayDate(String dateStr) {
+        return DateUtil.formatDisplayDate(dateStr);
     }
 }

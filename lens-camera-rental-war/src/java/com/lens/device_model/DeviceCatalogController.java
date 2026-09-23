@@ -1,7 +1,9 @@
 package com.lens.device_model;
 
+import com.lens.availability.service.AvailabilityServiceLocal;
 import com.lens.common.util.FormatUtil;
 import com.lens.common.util.ImageUtil;
+import com.lens.config.PaginationConfig;
 import com.lens.device_model.entity.DeviceModels;
 import com.lens.device_model.facade.DeviceModelsFacadeLocal;
 import jakarta.annotation.PostConstruct;
@@ -24,7 +26,7 @@ public class DeviceCatalogController implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // Globally identifiable Constants for Rental Rate Filter Ranges
+    //bộ lọc giá
     public static final String PRICE_RANGE_UNDER_100 = "under_100";
     public static final String PRICE_RANGE_100_TO_300 = "100_300";
     public static final String PRICE_RANGE_300_TO_500 = "300_500";
@@ -37,17 +39,19 @@ public class DeviceCatalogController implements Serializable {
     @EJB
     private DeviceModelsFacadeLocal deviceModelsFacade;
 
-    // Filter Parameters
+    @EJB
+    private AvailabilityServiceLocal availabilityService;
+
+    //bộ lọc
     private String search = "";
     private String type = "";
     private String brand = "";
     private String rate = "";
 
-    // Pagination Parameters
+    //phân trang
     private int page = 1;
-    private int pageSize = 12; // 12 items (fits clean 4-column card grid and table)
+    private int pageSize;
 
-    // Metrics & Data Collections
     private int totalCount = 0;
     private int filteredCount = 0;
     private int totalPages = 1;
@@ -67,9 +71,6 @@ public class DeviceCatalogController implements Serializable {
         applyFilter();
     }
 
-    /**
-     * Loads distinct categories and brands from database.
-     */
     public void loadFilterOptions() {
         try {
             types = deviceModelsFacade.findDistinctTypes();
@@ -80,10 +81,7 @@ public class DeviceCatalogController implements Serializable {
         }
     }
 
-    /**
-     * Applies search, category, brand, and rental rate filters,
-     * updates counts, and slices for current page.
-     */
+    //áp dụng bộ lọc
     public void applyFilter() {
         try {
             allDevices = deviceModelsFacade.findAll();
@@ -92,9 +90,8 @@ public class DeviceCatalogController implements Serializable {
             }
             totalCount = allDevices.size();
 
-            // Apply filter criteria
             filteredDevices = allDevices.stream().filter(deviceModel -> {
-                // 1. Search Query
+                //thanh search thiết bị
                 if (search != null && !search.trim().isEmpty()) {
                     String searchKeyword = search.trim().toLowerCase();
                     boolean isNameMatched = deviceModel.getName() != null && deviceModel.getName().toLowerCase().contains(searchKeyword);
@@ -106,21 +103,21 @@ public class DeviceCatalogController implements Serializable {
                     }
                 }
 
-                // 2. Category Type Filter
+                //lọc phân loại
                 if (type != null && !type.trim().isEmpty()) {
                     if (deviceModel.getType() == null || !deviceModel.getType().equalsIgnoreCase(type.trim())) {
                         return false;
                     }
                 }
 
-                // 3. Brand Filter
+                //lọc brand
                 if (brand != null && !brand.trim().isEmpty()) {
                     if (deviceModel.getBrand() == null || !deviceModel.getBrand().equalsIgnoreCase(brand.trim())) {
                         return false;
                     }
                 }
 
-                // 4. Rental Rate Range Filter (Self-explanatory, clean global identifiers)
+                //lọc giá
                 if (rate != null && !rate.trim().isEmpty()) {
                     long rentalPricePerDay = deviceModel.getRentalPrice();
                     String selectedRateRange = rate.trim();
@@ -146,20 +143,16 @@ public class DeviceCatalogController implements Serializable {
             }).collect(Collectors.toList());
 
             filteredCount = filteredDevices.size();
-            totalPages = Math.max(1, (int) Math.ceil((double) filteredCount / pageSize));
+            pageSize = PaginationConfig.resolvePageSize(pageSize);
 
-            // Clamp page
-            if (page < 1) page = 1;
-            if (page > totalPages) page = totalPages;
-
-            // Slice for current page
-            int fromIndex = (page - 1) * pageSize;
-            int toIndex = Math.min(fromIndex + pageSize, filteredCount);
-
-            if (fromIndex < filteredCount) {
-                pagedDevices = filteredDevices.subList(fromIndex, toIndex);
+            if (pageSize > 0) {
+                totalPages = PaginationConfig.calculateTotalPages(filteredCount, pageSize);
+                page = PaginationConfig.clampPage(page, totalPages);
+                pagedDevices = PaginationConfig.paginate(filteredDevices, page, pageSize);
             } else {
-                pagedDevices = Collections.emptyList();
+                page = 1;
+                totalPages = 1;
+                pagedDevices = filteredDevices;
             }
 
         } catch (Exception e) {
@@ -173,28 +166,34 @@ public class DeviceCatalogController implements Serializable {
         }
     }
 
-    /**
-     * Formats currency amount using standard FormatUtil.
-     */
     public String formatPrice(long price) {
         return FormatUtil.formatPrice(price);
     }
 
-    /**
-     * Resolves device model image URL.
-     */
     public String getImageUrl(String imageName) {
         return ImageUtil.getDeviceImageUrl(imageName);
     }
 
-    /**
-     * Default placeholder device image.
-     */
     public String getDefaultImageUrl() {
         return ImageUtil.getDefaultImageUrl();
     }
 
-    // Getters and Setters
+    ///thiết bị khả dụng
+    public boolean isProductAvailable(Integer id) {
+        if (availabilityService == null || id == null) {
+            return false;
+        }
+        return availabilityService.isProductAvailable(id);
+    }
+
+    //thiết bị hết hàng
+    public String getProductAvailabilityStatus(Integer id) {
+        if (availabilityService == null || id == null) {
+            return "OUT OF STOCK";
+        }
+        return availabilityService.getProductAvailabilityStatus(id);
+    }
+
     public String getSearch() {
         return search;
     }
@@ -236,6 +235,9 @@ public class DeviceCatalogController implements Serializable {
     }
 
     public int getPageSize() {
+        if (pageSize <= 0) {
+            pageSize = PaginationConfig.getDefaultPageSize();
+        }
         return pageSize;
     }
 

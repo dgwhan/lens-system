@@ -14,7 +14,7 @@
 
         // Extract Configuration
         const currentPage = parseInt(navEl.getAttribute('data-current-page') || '1', 10);
-        const pageSize = parseInt(navEl.getAttribute('data-page-size') || '12', 10);
+        const pageSize = parseInt(navEl.getAttribute('data-page-size'), 10) || totalItems || 1;
         const totalItems = parseInt(navEl.getAttribute('data-total-items') || '0', 10);
         const itemLabel = navEl.getAttribute('data-item-label') || 'devices';
         const showSummary = navEl.getAttribute('data-show-summary') !== 'false';

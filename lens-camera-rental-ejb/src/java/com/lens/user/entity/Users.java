@@ -33,8 +33,8 @@ import java.util.Date;
     @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
     @NamedQuery(name = "Users.findByPhone", query = "SELECT u FROM Users u WHERE u.phone = :phone"),
     @NamedQuery(name = "Users.findByRole", query = "SELECT u FROM Users u WHERE u.role = :role"),
-    @NamedQuery(name = "Users.findByCreatedAt", query = "SELECT u FROM Users u WHERE u.createdAt = :createdAt"),
     @NamedQuery(name = "Users.findByStatus", query = "SELECT u FROM Users u WHERE u.status = :status"),
+    @NamedQuery(name = "Users.findByCreatedAt", query = "SELECT u FROM Users u WHERE u.createdAt = :createdAt"),
     @NamedQuery(name = "Users.findByUpdatedAt", query = "SELECT u FROM Users u WHERE u.updatedAt = :updatedAt")})
 public class Users implements Serializable {
 
@@ -76,14 +76,14 @@ public class Users implements Serializable {
     private String role;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-    @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "status")
     private String status;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
     @Basic(optional = false)
     @NotNull
     @Column(name = "updated_at")
@@ -97,15 +97,15 @@ public class Users implements Serializable {
         this.id = id;
     }
 
-    public Users(Integer id, String username, String password, String fullName, String phone, String role, Date createdAt, String status, Date updatedAt) {
+    public Users(Integer id, String username, String password, String fullName, String phone, String role, String status, Date createdAt, Date updatedAt) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.fullName = fullName;
         this.phone = phone;
         this.role = role;
-        this.createdAt = createdAt;
         this.status = status;
+        this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
@@ -165,20 +165,20 @@ public class Users implements Serializable {
         this.role = role;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Date getUpdatedAt() {

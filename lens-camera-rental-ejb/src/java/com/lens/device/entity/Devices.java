@@ -51,7 +51,7 @@ public class Devices implements Serializable {
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "status")
-    private String status = "AVAILABLE";
+    private String status;
     @Basic(optional = false)
     @NotNull
     @Column(name = "created_at")

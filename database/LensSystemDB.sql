@@ -70,6 +70,113 @@ CREATE TABLE Devices (
 );
 GO
 
+
+-- rental orders
+CREATE TABLE RentalOrders (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    customer_name NVARCHAR(100) NOT NULL,
+    customer_phone VARCHAR(20) NOT NULL,
+
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+
+    subtotal DECIMAL(12,0) NOT NULL DEFAULT 0,
+    deposit_total DECIMAL(12,0) NOT NULL DEFAULT 0,
+    total_payable DECIMAL(12,0) NOT NULL DEFAULT 0,
+
+    created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
+    updated_at DATETIME2 NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT FK_RentalOrders_Users
+        FOREIGN KEY (user_id)
+        REFERENCES Users(id),
+
+    CONSTRAINT CK_RentalOrders_Status
+        CHECK (status IN (
+            'PENDING',
+            'APPROVED',
+            'REJECTED',
+            'ACTIVE',
+            'COMPLETED'
+        )),
+
+    CONSTRAINT CK_RentalOrders_Subtotal
+        CHECK (subtotal >= 0),
+
+    CONSTRAINT CK_RentalOrders_DepositTotal
+        CHECK (deposit_total >= 0),
+
+    CONSTRAINT CK_RentalOrders_TotalAmount
+        CHECK (total_payable >= 0)
+);
+GO
+
+
+-- rental items
+CREATE TABLE RentalItems (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+
+    rental_order_id INT NOT NULL,
+    device_model_id INT NOT NULL,
+    assigned_device_id INT NULL,
+
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    duration INT NOT NULL,
+
+    rental_price DECIMAL(12,0) NOT NULL,
+    deposit_amount DECIMAL(12,0) NOT NULL,
+    subtotal DECIMAL(12,0) NOT NULL,
+
+    CONSTRAINT FK_RentalItems_RentalOrders
+        FOREIGN KEY (rental_order_id)
+        REFERENCES RentalOrders(id),
+
+    CONSTRAINT FK_RentalItems_DeviceModels
+        FOREIGN KEY (device_model_id)
+        REFERENCES DeviceModels(id),
+
+    CONSTRAINT FK_RentalItems_Devices
+        FOREIGN KEY (assigned_device_id)
+        REFERENCES Devices(id),
+
+    CONSTRAINT CK_RentalItems_Date
+        CHECK (end_date > start_date),
+
+    CONSTRAINT CK_RentalItems_Duration
+        CHECK (duration > 0),
+
+    CONSTRAINT CK_RentalItems_RentalPrice
+        CHECK (rental_price >= 0),
+
+    CONSTRAINT CK_RentalItems_DepositAmount
+        CHECK (deposit_amount >= 0),
+
+    CONSTRAINT CK_RentalItems_Subtotal
+        CHECK (subtotal >= 0)
+);
+GO
+
+
+-- payment
+ALTER TABLE RentalOrders
+ADD payment_method VARCHAR(20) NOT NULL DEFAULT 'CASH',
+    payment_status VARCHAR(20) NOT NULL DEFAULT 'UNPAID';
+GO
+
+ALTER TABLE RentalOrders
+ADD CONSTRAINT CK_RentalOrders_PaymentMethod
+    CHECK (payment_method IN ('CASH'));
+GO
+
+ALTER TABLE RentalOrders
+ADD CONSTRAINT CK_RentalOrders_PaymentStatus
+    CHECK (payment_status IN ('UNPAID', 'PAID'));
+GO
+
+
 INSERT INTO Users (username, password, full_name, email, phone, role)
 VALUES ('admin', 'admin', N'Administrator', 'admin@lens.com', '0900000000', 'ADMIN');
 GO

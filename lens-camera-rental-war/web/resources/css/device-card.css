@@ -257,72 +257,81 @@
     color: var(--hdr-gray-700, #333333);
 }
 
-/* Rate and Status Row */
+/* Rate Row */
 .device-card-rate-row {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 4px;
     margin-bottom: 18px;
     margin-top: auto;
-}
-
-.device-card-rate-col {
-    display: flex;
-    flex-direction: column;
 }
 
 .device-card-rate-label {
     font-family: var(--hdr-font, 'Inter', sans-serif);
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--hdr-gray-600, #6b7280);
-    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
 }
 
 .device-card-rate-value {
     display: flex;
     align-items: baseline;
-    gap: 4px;
+    gap: 6px;
+    white-space: nowrap;
+    line-height: 1.2;
 }
 
 .device-card-price {
     font-family: var(--hdr-font, 'Inter', sans-serif);
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
     font-weight: 700;
     color: var(--hdr-black, #111827);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
 }
 
 .device-card-period {
     font-family: var(--hdr-font, 'Inter', sans-serif);
     font-size: 0.8125rem;
-    font-weight: 400;
+    font-weight: 500;
     color: var(--hdr-gray-600, #6b7280);
+    white-space: nowrap;
 }
 
+/* customer availability badge: overlay on image at top-right, no dot, no border stroke, rounded pill with background */
 .device-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-family: var(--hdr-font, 'Inter', sans-serif);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--status-success-text, #2E7D32);
-    background: transparent;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 9999px;
     border: none;
-    padding: 0;
+    font-family: var(--hdr-font, 'Inter', sans-serif);
+    font-size: 0.6875rem;
+    font-weight: 700;
     line-height: 1;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.device-card-badge::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: currentColor;
-    flex-shrink: 0;
+.device-card-badge.status-badge-available {
+    background-color: var(--status-success-bg, #E8F5E9);
+    color: var(--status-success-text, #2E7D32);
+}
+
+/* out of stock handling */
+.device-card-badge.status-badge-out-of-stock {
+    background-color: var(--status-danger-bg, #FEF2F2);
+    color: var(--status-danger-text, #dc2626);
 }
 
 /* Action Button: View Details */

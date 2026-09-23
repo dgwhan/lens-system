@@ -1,13 +1,15 @@
 package com.lens.home;
 
+import com.lens.availability.service.AvailabilityServiceLocal;
+import com.lens.common.util.FormatUtil;
+import com.lens.common.util.ImageUtil;
 import com.lens.device_model.entity.DeviceModels;
 import com.lens.device_model.facade.DeviceModelsFacadeLocal;
-import com.lens.common.util.ImageUtil;
-import com.lens.common.util.FormatUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +26,10 @@ public class HomeController implements Serializable {
     @jakarta.ejb.EJB
     private DeviceModelsFacadeLocal deviceModelsFacade;
 
+    // customer availability
+    @jakarta.ejb.EJB
+    private AvailabilityServiceLocal availabilityService;
+
     private List<DeviceModels> featuredDevices;
 
     public HomeController() {
@@ -38,8 +44,16 @@ public class HomeController implements Serializable {
         try {
             List<DeviceModels> all = deviceModelsFacade.search("");
             if (all != null && !all.isEmpty()) {
-                int limit = Math.min(4, all.size());
-                featuredDevices = all.subList(0, limit);
+                // customer availability
+                // product availability: prioritize AVAILABLE over OUT OF STOCK before taking the subList
+                List<DeviceModels> sortedList = new ArrayList<>(all);
+                sortedList.sort((d1, d2) -> {
+                    boolean a1 = isProductAvailable(d1.getId());
+                    boolean a2 = isProductAvailable(d2.getId());
+                    return Boolean.compare(!a1, !a2); // false (!a1) before true (!a2) -> available first
+                });
+                int limit = Math.min(4, sortedList.size());
+                featuredDevices = sortedList.subList(0, limit);
             } else {
                 featuredDevices = Collections.emptyList();
             }
@@ -70,4 +84,23 @@ public class HomeController implements Serializable {
     public String getDefaultImageUrl() {
         return ImageUtil.getDefaultImageUrl();
     }
+
+    // customer availability
+    // product availability
+    public boolean isProductAvailable(Integer id) {
+        if (availabilityService == null || id == null) {
+            return false;
+        }
+        return availabilityService.isProductAvailable(id);
+    }
+
+    // customer availability
+    // out of stock handling
+    public String getProductAvailabilityStatus(Integer id) {
+        if (availabilityService == null || id == null) {
+            return "OUT OF STOCK";
+        }
+        return availabilityService.getProductAvailabilityStatus(id);
+    }
 }
+

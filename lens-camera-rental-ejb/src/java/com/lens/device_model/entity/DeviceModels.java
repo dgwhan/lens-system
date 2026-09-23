@@ -35,13 +35,13 @@ import java.util.Date;
     @NamedQuery(name = "DeviceModels.findByName", query = "SELECT d FROM DeviceModels d WHERE d.name = :name"),
     @NamedQuery(name = "DeviceModels.findByType", query = "SELECT d FROM DeviceModels d WHERE d.type = :type"),
     @NamedQuery(name = "DeviceModels.findByBrand", query = "SELECT d FROM DeviceModels d WHERE d.brand = :brand"),
+    @NamedQuery(name = "DeviceModels.findByImageUrl", query = "SELECT d FROM DeviceModels d WHERE d.imageUrl = :imageUrl"),
     @NamedQuery(name = "DeviceModels.findByModel", query = "SELECT d FROM DeviceModels d WHERE d.model = :model"),
     @NamedQuery(name = "DeviceModels.findByDescription", query = "SELECT d FROM DeviceModels d WHERE d.description = :description"),
     @NamedQuery(name = "DeviceModels.findByRentalPrice", query = "SELECT d FROM DeviceModels d WHERE d.rentalPrice = :rentalPrice"),
     @NamedQuery(name = "DeviceModels.findByDepositAmount", query = "SELECT d FROM DeviceModels d WHERE d.depositAmount = :depositAmount"),
     @NamedQuery(name = "DeviceModels.findByCreatedAt", query = "SELECT d FROM DeviceModels d WHERE d.createdAt = :createdAt"),
-    @NamedQuery(name = "DeviceModels.findByUpdatedAt", query = "SELECT d FROM DeviceModels d WHERE d.updatedAt = :updatedAt"),
-    @NamedQuery(name = "DeviceModels.findByImageUrl", query = "SELECT d FROM DeviceModels d WHERE d.imageUrl = :imageUrl")})
+    @NamedQuery(name = "DeviceModels.findByUpdatedAt", query = "SELECT d FROM DeviceModels d WHERE d.updatedAt = :updatedAt")})
 public class DeviceModels implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +65,9 @@ public class DeviceModels implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "brand")
     private String brand;
+    @Size(max = 500)
+    @Column(name = "image_url")
+    private String imageUrl;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -91,9 +94,6 @@ public class DeviceModels implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @Size(max = 500)
-    @Column(name = "image_url")
-    private String imageUrl;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceModelId")
     private Collection<Devices> devicesCollection;
 
@@ -148,6 +148,14 @@ public class DeviceModels implements Serializable {
         this.brand = brand;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public String getModel() {
         return model;
     }
@@ -196,14 +204,6 @@ public class DeviceModels implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     @XmlTransient
     public Collection<Devices> getDevicesCollection() {
         return devicesCollection;
@@ -235,7 +235,7 @@ public class DeviceModels implements Serializable {
 
     @Override
     public String toString() {
-        return "com.lens.device_model.entity.DeviceModels[ id=" + id + " ]";
+        return "com.lens.device.entity.DeviceModels[ id=" + id + " ]";
     }
 
 }
